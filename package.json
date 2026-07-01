@@ -7,8 +7,5 @@
   "scripts": {
     "test": "npm --workspace backend test && node scripts/frontend-smoke-test.js",
     "lint": "npm --workspace backend run lint && node --check scripts/frontend-smoke-test.js"
-  },
-  "dependencies": {
-    "vercel": "^54.18.6"
   }
 }

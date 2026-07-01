@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureWallet - DevSecOps</title>
+    <style>
+        :root {
+            color-scheme: light;
+            --ink: #17202a;
+            --muted: #566573;
+            --line: #d7dde5;
+            --panel: #ffffff;
+            --accent: #0f766e;
+            --accent-2: #b42318;
+            --bg: #f5f7fa;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            color: var(--ink);
+            background: var(--bg);
+            line-height: 1.55;
+        }
+
+        header {
+            background: #17202a;
+            color: #fff;
+            padding: 42px 24px 34px;
+        }
+
+        header .inner, main {
+            width: min(1080px, calc(100% - 32px));
+            margin: 0 auto;
+        }
+
+        h1 {
+            margin: 0 0 10px;
+            font-size: clamp(32px, 5vw, 56px);
+            letter-spacing: 0;
+        }
+
+        .lead {
+            max-width: 760px;
+            margin: 0;
+            color: #dce3ea;
+            font-size: 18px;
+        }
+
+        main {
+            padding: 28px 0 48px;
+        }
+
+        section {
+            margin-top: 24px;
+            padding: 24px;
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+        }
+
+        h2 {
+            margin: 0 0 16px;
+            font-size: 24px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 14px;
+        }
+
+        .item {
+            border-left: 4px solid var(--accent);
+            padding: 12px 14px;
+            background: #f8fafc;
+        }
+
+        .item strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .warn {
+            border-left-color: var(--accent-2);
+        }
+
+        code {
+            padding: 2px 5px;
+            border-radius: 4px;
+            background: #eef2f7;
+        }
+
+        ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        li + li {
+            margin-top: 8px;
+        }
+
+        footer {
+            color: var(--muted);
+            font-size: 14px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="inner">
+            <h1>SecureWallet</h1>
+            <p class="lead">Vitrine de preproduction du projet final DevSecOps : gouvernance Git, CI durcie, secrets chiffres, conteneurisation, SBOM et deploiement continu.</p>
+        </div>
+    </header>
+
+    <main>
+        <section>
+            <h2>Architecture livree</h2>
+            <div class="grid">
+                <div class="item">
+                    <strong>Frontend statique</strong>
+                    <span><code>frontend/</code> publie via GitHub Pages avec artefact ephemere.</span>
+                </div>
+                <div class="item">
+                    <strong>Backend Node.js</strong>
+                    <span><code>backend/</code> expose l'API Express et le healthcheck Vercel.</span>
+                </div>
+                <div class="item">
+                    <strong>Image Docker</strong>
+                    <span>Build multi-stage, utilisateur non-root, scan Trivy avant GHCR.</span>
+                </div>
+                <div class="item">
+                    <strong>Secrets GitOps</strong>
+                    <span><code>.github/secrets-prod.yaml</code> chiffre uniquement les valeurs avec SOPS et age.</span>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Chaine de validation</h2>
+            <ul>
+                <li><code>staging</code> execute la CI complete a chaque push ou pull request.</li>
+                <li><code>main</code> declenche la production seulement apres tests, Gitleaks, CodeQL, SBOM et scan image.</li>
+                <li><code>preprod</code> publie cette page depuis <code>docs/</code> avec GitHub Actions.</li>
+                <li>Les jobs de deploiement utilisent des permissions minimales et un environnement <code>production</code>.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Controles securite</h2>
+            <div class="grid">
+                <div class="item">
+                    <strong>Shift-left local</strong>
+                    <span>Hook pre-commit versionne dans <code>scripts/pre-commit.sh</code> et installable par <code>scripts/install-hooks.sh</code>.</span>
+                </div>
+                <div class="item">
+                    <strong>Gitleaks</strong>
+                    <span>Regle dediee aux jetons <code>SECWALLET_</code> suivis de 24 caracteres majuscules ou chiffres.</span>
+                </div>
+                <div class="item">
+                    <strong>CodeQL</strong>
+                    <span>Echec du job si une alerte majeure ou de niveau error est detectee.</span>
+                </div>
+                <div class="item warn">
+                    <strong>Interruption absolue</strong>
+                    <span>Aucun <code>continue-on-error</code> sur les controles bloquants.</span>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            Projet final DevSecOps - Sophia Ynov Campus.
+        </footer>
+    </main>
+</body>
+</html>

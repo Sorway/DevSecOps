@@ -70,8 +70,10 @@ non auditée** et bâtir un flux où le code de production est *techniquement* v
 │   ├── actions/trivy-scan/         # composite action — scan SBOM CycloneDX
 │   ├── branch-protection/main.yml  # politique de protection documentée
 │   └── secrets-prod.yaml           # secrets chiffrés SOPS (valeurs ENC[...])
-├── docs/index.html                 # GitHub Page — vitrine du projet (thème Zensical)
-├── .git/hooks/pre-commit           # barrière Shift-Left locale (voir §3)
+├── docs/index.html                 # GitHub Page — vitrine du projet (preprod)
+├── scripts/install-hooks.sh        # installation du hook pre-commit local
+├── scripts/install-hooks.ps1       # installation du hook pre-commit local sous PowerShell
+├── scripts/pre-commit.sh           # source versionnée du hook Shift-Left
 ├── gitleaks.toml                   # règle SECWALLET_ sur-mesure
 ├── scripts/frontend-smoke-test.js  # test de fumée du frontend
 └── README.md
@@ -123,8 +125,18 @@ l'intégrité des commits sur le poste de travail. Il valide **séquentiellement
 
    > **Sécurité : Tentative de commit d'un fichier de configuration ou d'une clé en clair. Opération annulée.**
 
-> Les binaires locaux du hook sont placés dans `.git/hooks/bin/` pour éviter les problèmes de PATH
-> entre Windows et Git Bash. Le hook Git n'étant pas versionné, réinstallez-le sur tout nouveau clone.
+Le hook Git installé dans `.git/hooks/` n'est pas versionné par Git. Sa source est donc conservée dans
+[`scripts/pre-commit.sh`](scripts/pre-commit.sh) et peut être réinstallée sur un nouveau clone avec :
+
+```bash
+bash scripts/install-hooks.sh
+```
+
+Sous PowerShell :
+
+```powershell
+.\scripts\install-hooks.ps1
+```
 
 ### Règle Gitleaks sur-mesure — [`gitleaks.toml`](gitleaks.toml)
 

@@ -1,0 +1,41 @@
+name: Deploy preprod GitHub Page
+
+# Publie la vitrine de presentation du projet (dossier docs/) sur GitHub Pages.
+# Scope volontairement limite a la branche preprod : la CD de production (frontend/)
+# reste pilotee par ci-cd.yml sur main.
+on:
+  push:
+    branches: [preprod]
+    paths:
+      - 'docs/**'
+      - '.github/workflows/pages-preprod.yml'
+  workflow_dispatch:
+
+# Moindre privilege : lecture seule par defaut.
+permissions:
+  contents: read
+
+# Un seul deploiement de preview a la fois ; le dernier push supplante le precedent.
+concurrency:
+  group: pages-preprod
+  cancel-in-progress: true
+
+jobs:
+  deploy-preprod-page:
+    name: deploy-preprod-page
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+      - id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,17 @@
+node_modules/
+npm-debug.log*
+.env
+*.env
+*.pem
+*.key
+ops.txt
+.vercel/
+coverage/
+dist/
+build/
+*.sarif
+sbom*.json
+.tmp-tools/
+
+.vercel
+.env*

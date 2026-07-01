@@ -1,0 +1,28 @@
+name: Trivy SBOM scan
+description: Scan a CycloneDX SBOM with Trivy and fail only on CRITICAL vulnerabilities.
+inputs:
+  sbom-path:
+    description: Path to the CycloneDX JSON SBOM.
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Scan CRITICAL vulnerabilities
+      shell: bash
+      run: |
+        trivy sbom --exit-code 1 --severity CRITICAL --format table "${{ inputs.sbom-path }}"
+    - name: Summarize HIGH and MEDIUM vulnerabilities
+      shell: bash
+      run: |
+        set +e
+        trivy sbom --exit-code 0 --severity HIGH,MEDIUM --format table "${{ inputs.sbom-path }}" > trivy-warnings.txt
+        {
+          echo "## Trivy SBOM warnings"
+          echo
+          echo "HIGH and MEDIUM findings are warnings for this composite action."
+          echo
+          echo '```text'
+          cat trivy-warnings.txt
+          echo '```'
+        } >> "$GITHUB_STEP_SUMMARY"
+

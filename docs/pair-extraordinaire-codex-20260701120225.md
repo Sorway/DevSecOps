@@ -1,0 +1,52 @@
+# Pair Extraordinaire Codex
+
+Serie de commits co-signes avec le compte GitHub codex.
+
+- Commit co-signe codex 1/48
+- Commit co-signe codex 2/48
+- Commit co-signe codex 3/48
+- Commit co-signe codex 4/48
+- Commit co-signe codex 5/48
+- Commit co-signe codex 6/48
+- Commit co-signe codex 7/48
+- Commit co-signe codex 8/48
+- Commit co-signe codex 9/48
+- Commit co-signe codex 10/48
+- Commit co-signe codex 11/48
+- Commit co-signe codex 12/48
+- Commit co-signe codex 13/48
+- Commit co-signe codex 14/48
+- Commit co-signe codex 15/48
+- Commit co-signe codex 16/48
+- Commit co-signe codex 17/48
+- Commit co-signe codex 18/48
+- Commit co-signe codex 19/48
+- Commit co-signe codex 20/48
+- Commit co-signe codex 21/48
+- Commit co-signe codex 22/48
+- Commit co-signe codex 23/48
+- Commit co-signe codex 24/48
+- Commit co-signe codex 25/48
+- Commit co-signe codex 26/48
+- Commit co-signe codex 27/48
+- Commit co-signe codex 28/48
+- Commit co-signe codex 29/48
+- Commit co-signe codex 30/48
+- Commit co-signe codex 31/48
+- Commit co-signe codex 32/48
+- Commit co-signe codex 33/48
+- Commit co-signe codex 34/48
+- Commit co-signe codex 35/48
+- Commit co-signe codex 36/48
+- Commit co-signe codex 37/48
+- Commit co-signe codex 38/48
+- Commit co-signe codex 39/48
+- Commit co-signe codex 40/48
+- Commit co-signe codex 41/48
+- Commit co-signe codex 42/48
+- Commit co-signe codex 43/48
+- Commit co-signe codex 44/48
+- Commit co-signe codex 45/48
+- Commit co-signe codex 46/48
+- Commit co-signe codex 47/48
+- Commit co-signe codex 48/48

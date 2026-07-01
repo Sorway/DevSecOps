@@ -1,0 +1,19 @@
+branches:
+  main:
+    direct_push: forbidden
+    required_pull_request_reviews: true
+    required_status_checks:
+      strict: true
+      contexts:
+        - validate-workflows
+        - test
+        - gitleaks
+        - codeql
+        - sbom-scan
+        - docker-image
+    deployment_environment: production
+  staging:
+    integration_branch: true
+    ci_required_on_push: true
+    ci_required_on_pull_request: true
+

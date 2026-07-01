@@ -1,0 +1,235 @@
+name: CI CD durcie
+
+on:
+  push:
+    branches: [staging, main]
+  pull_request:
+    branches: [staging, main]
+
+permissions:
+  contents: read
+
+env:
+  ACTIONLINT_VERSION: 1.7.7
+  TRIVY_VERSION: 0.72.0
+
+concurrency:
+  group: ci-cd-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-workflows:
+    name: validate-workflows
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install actionlint
+        run: |
+          curl -sSLo actionlint.tar.gz "https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz"
+          tar -xzf actionlint.tar.gz actionlint
+          sudo install actionlint /usr/local/bin/actionlint
+      - name: Validate GitHub Actions workflows
+        run: |
+          mapfile -d '' workflow_files < <(find .github/workflows -maxdepth 1 -type f \( -name '*.yml' -o -name '*.yaml' \) -print0)
+          actionlint "${workflow_files[@]}"
+
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    needs: validate-workflows
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            backend/package-lock.json
+      - run: npm ci
+      - run: npm test
+      - run: npm run lint
+
+  gitleaks:
+    name: gitleaks
+    runs-on: ubuntu-latest
+    needs: validate-workflows
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITLEAKS_CONFIG: gitleaks.toml
+
+  codeql:
+    name: codeql
+    runs-on: ubuntu-latest
+    needs: test
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: github/codeql-action/init@v3
+        with:
+          languages: javascript-typescript
+          queries: security-extended
+      - uses: github/codeql-action/autobuild@v3
+      - uses: github/codeql-action/analyze@v3
+        with:
+          output: codeql-results
+          upload: false
+      - uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: codeql-results/javascript.sarif
+      - name: Fail on CodeQL high severity
+        run: |
+          jq -e '
+            [ .runs[].results[]
+              | select((.level == "error") or (.properties["security-severity"] // "0" | tonumber >= 7.0))
+            ] | length == 0
+          ' codeql-results/javascript.sarif
+
+  sbom-scan:
+    name: sbom-scan
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Trivy
+        run: |
+          curl -sfL -o trivy.tar.gz "https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz"
+          tar -xzf trivy.tar.gz trivy
+          sudo install trivy /usr/local/bin/trivy
+          trivy --version
+      - name: Generate CycloneDX SBOM
+        run: trivy fs --format cyclonedx --output sbom-backend.json backend
+      - name: Scan SBOM with local composite action
+        uses: ./.github/actions/trivy-scan
+        with:
+          sbom-path: sbom-backend.json
+
+  docker-image:
+    name: docker-image
+    runs-on: ubuntu-latest
+    needs: [test, gitleaks, codeql, sbom-scan]
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      changed: ${{ steps.filter.outputs.backend }}
+      image: ${{ steps.meta.outputs.image }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            backend:
+              - 'backend/**'
+              - '.github/workflows/ci-cd.yml'
+      - id: meta
+        run: echo "image=ghcr.io/${GITHUB_REPOSITORY,,}/backend:${GITHUB_SHA}" >> "$GITHUB_OUTPUT"
+      - uses: docker/setup-buildx-action@v3
+        if: steps.filter.outputs.backend == 'true'
+      - name: Build backend image
+        if: steps.filter.outputs.backend == 'true'
+        run: docker build -t "${{ steps.meta.outputs.image }}" backend
+      - name: Install Trivy
+        if: steps.filter.outputs.backend == 'true'
+        run: |
+          curl -sfL -o trivy.tar.gz "https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz"
+          tar -xzf trivy.tar.gz trivy
+          sudo install trivy /usr/local/bin/trivy
+          trivy --version
+      - name: Scan backend image
+        if: steps.filter.outputs.backend == 'true'
+        run: trivy image --exit-code 1 --severity HIGH,CRITICAL "${{ steps.meta.outputs.image }}"
+      - uses: docker/login-action@v3
+        if: github.ref == 'refs/heads/main' && steps.filter.outputs.backend == 'true'
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Push backend image to GHCR
+        if: github.ref == 'refs/heads/main' && steps.filter.outputs.backend == 'true'
+        run: docker push "${{ steps.meta.outputs.image }}"
+
+  deploy-frontend:
+    name: deploy-frontend
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    needs: [test, gitleaks, codeql, sbom-scan, docker-image]
+    environment: production
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: frontend
+      - uses: actions/deploy-pages@v4
+
+  deploy-backend:
+    name: deploy-backend
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    needs: [test, gitleaks, codeql, sbom-scan, docker-image]
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install deploy tools
+        run: |
+          npm install --global vercel
+          curl -sSLo /usr/local/bin/sops https://github.com/getsops/sops/releases/download/v3.9.0/sops-v3.9.0.linux.amd64
+          chmod +x /usr/local/bin/sops
+      - name: Deploy backend to Vercel
+        id: vercel
+        env:
+          SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+        run: |
+          set -euo pipefail
+          for secret_name in SOPS_AGE_KEY VERCEL_TOKEN VERCEL_PROJECT_ID VERCEL_ORG_ID; do
+            if [ -z "${!secret_name:-}" ]; then
+              echo "Secret GitHub manquant ou vide: ${secret_name}" >&2
+              exit 1
+            fi
+          done
+          age_key_file="$(mktemp)"
+          printf '%s\n' "$SOPS_AGE_KEY" | tr -d '\r' > "$age_key_file"
+          if ! grep -q '^AGE-SECRET-KEY-' "$age_key_file"; then
+            echo "SOPS_AGE_KEY doit contenir la cle privee age, pas la cle publique age1..." >&2
+            exit 1
+          fi
+          export SOPS_AGE_KEY_FILE="$age_key_file"
+          unset SOPS_AGE_KEY
+          secrets_json="$(sops -d --output-type json .github/secrets-prod.yaml)"
+          mapfile -t env_args < <(node -e 'const s=JSON.parse(process.argv[1]).production; for (const [k,v] of Object.entries(s)) console.log("--env=" + k + "=" + String(v))' "$secrets_json")
+          vercel pull --yes --environment=production --token "$VERCEL_TOKEN"
+          deploy_output="$(vercel deploy backend --prod --yes --token "$VERCEL_TOKEN" "${env_args[@]}")"
+          printf '%s\n' "$deploy_output"
+          deploy_url="$(printf '%s\n' "$deploy_output" | grep -Eo 'https://[^[:space:]]+\.vercel\.app' | tail -n 1)"
+          if [ -z "$deploy_url" ]; then
+            echo "Impossible de trouver l'URL Vercel dans la sortie du deploy." >&2
+            exit 1
+          fi
+          echo "Backend Vercel URL: $deploy_url"
+          {
+            echo "## Backend deployment"
+            echo
+            echo "- URL: $deploy_url"
+            echo "- Healthcheck: $deploy_url/api/health"
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "url=$deploy_url" >> "$GITHUB_OUTPUT"
+      - name: Healthcheck
+        run: curl --fail --silent --show-error "${{ steps.vercel.outputs.url }}/api/health"

@@ -2,8 +2,7 @@ title = "Secure Wallet custom gitleaks rules"
 
 [[rules]]
 id = "secwallet-internal-token"
-description = "Detecte les jetons internes SECWALLET_ suivis de 24 caracteres alphanumeriques majuscules"
+description = "Jetons internes SECWALLET_"
 regex = '''SECWALLET_[A-Z0-9]{24}'''
 entropy = 3.5
 keywords = ["SECWALLET_"]
-

@@ -12,7 +12,7 @@ en une chaîne de livraison auditable, hermétique et infalsifiable.**
 [![Registry](https://img.shields.io/badge/Images-GHCR-24292e)](.github/workflows/ci-cd.yml)
 [![Made with](https://img.shields.io/badge/theme-Zensical-26c6da)](https://astronas.github.io/ynov-virtu/)
 
-📄 **Vitrine du projet (GitHub Page)** : publiée depuis la branche `preprod` — dossier [`docs/`](docs/index.html)
+📄 **Vitrine du projet** : consultable localement dans le dossier [`docs/`](docs/index.html)
 🎓 *Dernier cours de DevSecOps avancé — Sophia Ynov Campus*
 
 </div>
@@ -65,12 +65,11 @@ non auditée** et bâtir un flux où le code de production est *techniquement* v
 │   └── .dockerignore
 ├── .github/
 │   ├── workflows/
-│   │   ├── ci-cd.yml               # pipeline principal durci (staging + main)
-│   │   └── pages-preprod.yml       # déploiement de cette vitrine (preprod)
+│   │   └── ci-cd.yml               # pipeline principal durci (staging + main)
 │   ├── actions/trivy-scan/         # composite action — scan SBOM CycloneDX
 │   ├── branch-protection/main.yml  # politique de protection documentée
 │   └── secrets-prod.yaml           # secrets chiffrés SOPS (valeurs ENC[...])
-├── docs/index.html                 # GitHub Page — vitrine du projet (preprod)
+├── docs/index.html                 # vitrine/documentation locale du projet
 ├── scripts/install-hooks.sh        # installation du hook pre-commit local
 ├── scripts/install-hooks.ps1       # installation du hook pre-commit local sous PowerShell
 ├── scripts/pre-commit.sh           # source versionnée du hook Shift-Left
@@ -90,7 +89,7 @@ un auditeur constate qu'un déploiement sur `main` exige le succès absolu des j
 |---------|------|--------|
 | `staging` | Branche pivot d'intégration | La CI s'exécute **entièrement** à chaque push et pull request |
 | `main` | État stable en production | Push directs **strictement interdits**, PR review + status checks stricts, environnement `production` |
-| `preprod` | Préproduction / vitrine | Publie la GitHub Page de présentation (`docs/`) |
+| `preprod` | Préproduction | Branche de prévisualisation sans déploiement GitHub Pages |
 
 La stratégie de promotion est rendue visible par trois mécanismes combinés dans [`ci-cd.yml`](.github/workflows/ci-cd.yml) :
 
@@ -335,7 +334,7 @@ Pour prévisualiser la vitrine localement, ouvrez [`docs/index.html`](docs/index
 
 Un unique fichier texte déposé sur Moodle contenant :
 
-- **L'URL de la GitHub Page** (frontend + [vitrine `docs/`](docs/index.html)).
+- **L'URL de la GitHub Page** du frontend publié depuis `main`.
 - **L'URL Vercel** de l'API backend (avec son endpoint `/api/health`).
 - **L'URL du dépôt GitHub public** exposant l'arborescence complète et fonctionnelle : frontend, backend,
   hooks locaux personnalisés et la structure `.github/` au complet — montrant clairement la protection des

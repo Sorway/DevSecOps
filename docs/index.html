@@ -146,7 +146,7 @@
             <ul>
                 <li><code>staging</code> execute la CI complete a chaque push ou pull request.</li>
                 <li><code>main</code> declenche la production seulement apres tests, Gitleaks, CodeQL, SBOM et scan image.</li>
-                <li><code>preprod</code> publie cette page depuis <code>docs/</code> avec GitHub Actions.</li>
+                <li><code>preprod</code> sert de branche de previsualisation sans deploiement GitHub Pages.</li>
                 <li>Les jobs de deploiement utilisent des permissions minimales et un environnement <code>production</code>.</li>
             </ul>
         </section>

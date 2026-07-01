@@ -7,8 +7,27 @@ RESET="\033[0m"
 
 echo "Verification pre-commit..."
 
+HOOK_DIR="$(cd "$(dirname "$0")" && pwd)"
+HOOK_BIN_DIR="$HOOK_DIR/bin"
+
 ACTIONLINT_BIN="$(command -v actionlint.exe || command -v actionlint || true)"
 GITLEAKS_BIN="$(command -v gitleaks.exe || command -v gitleaks || true)"
+
+if [[ -z "$ACTIONLINT_BIN" && -x "$HOOK_BIN_DIR/actionlint.exe" ]]; then
+    ACTIONLINT_BIN="$HOOK_BIN_DIR/actionlint.exe"
+fi
+
+if [[ -z "$ACTIONLINT_BIN" && -x "$HOOK_BIN_DIR/actionlint" ]]; then
+    ACTIONLINT_BIN="$HOOK_BIN_DIR/actionlint"
+fi
+
+if [[ -z "$GITLEAKS_BIN" && -x "$HOOK_BIN_DIR/gitleaks.exe" ]]; then
+    GITLEAKS_BIN="$HOOK_BIN_DIR/gitleaks.exe"
+fi
+
+if [[ -z "$GITLEAKS_BIN" && -x "$HOOK_BIN_DIR/gitleaks" ]]; then
+    GITLEAKS_BIN="$HOOK_BIN_DIR/gitleaks"
+fi
 
 if [[ -z "$ACTIONLINT_BIN" && -x "/mnt/c/Users/jonat/AppData/Local/UniGetUI/Chocolatey/bin/actionlint.exe" ]]; then
     ACTIONLINT_BIN="/mnt/c/Users/jonat/AppData/Local/UniGetUI/Chocolatey/bin/actionlint.exe"
@@ -19,12 +38,12 @@ if [[ -z "$GITLEAKS_BIN" && -x "/mnt/c/Users/jonat/AppData/Local/UniGetUI/Chocol
 fi
 
 if [[ -z "$ACTIONLINT_BIN" ]]; then
-    echo -e "${RED}Erreur : actionlint est introuvable. Installe actionlint avant de commit.${RESET}"
+    echo -e "${RED}Erreur : actionlint est introuvable. Lance .\\scripts\\install-hook-tools.ps1 puis recommence le commit.${RESET}"
     exit 1
 fi
 
 if [[ -z "$GITLEAKS_BIN" ]]; then
-    echo -e "${RED}Erreur : gitleaks est introuvable. Installe gitleaks avant de commit.${RESET}"
+    echo -e "${RED}Erreur : gitleaks est introuvable. Lance .\\scripts\\install-hook-tools.ps1 puis recommence le commit.${RESET}"
     exit 1
 fi
 

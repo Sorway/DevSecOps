@@ -136,6 +136,7 @@ Sous PowerShell :
 
 ```powershell
 .\scripts\install-hooks.ps1
+.\scripts\install-hook-tools.ps1
 ```
 
 ### Règle Gitleaks sur-mesure — [`gitleaks.toml`](gitleaks.toml)

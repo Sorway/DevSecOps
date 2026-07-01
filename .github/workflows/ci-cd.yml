@@ -161,6 +161,9 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     needs: [test, gitleaks, codeql, sbom-scan, docker-image]
+    concurrency:
+      group: github-pages-deploy
+      cancel-in-progress: false
     environment: production
     permissions:
       contents: read

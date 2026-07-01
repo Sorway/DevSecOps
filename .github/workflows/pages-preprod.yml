@@ -25,6 +25,9 @@ jobs:
     name: deploy-preprod-page
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    concurrency:
+      group: github-pages-deploy
+      cancel-in-progress: false
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

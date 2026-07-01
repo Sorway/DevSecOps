@@ -10,3 +10,4 @@ sbom*.json
 .tmp-tools/
 
 .vercel
+.env*

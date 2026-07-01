@@ -9,15 +9,6 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
-function escapeHtml(value) {
-  return String(value)
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#39;');
-}
-
 app.get('/api/health', (req, res) => {
   const isDatabaseConfigured = !!process.env.DATABASE_URL || process.env.NODE_ENV === 'test';
   const isJwtConfigured = !!process.env.JWT_SECRET || process.env.NODE_ENV === 'test';
@@ -71,7 +62,9 @@ app.get('/api/debug-ping', async (req, res) => {
 
 app.get('/api/welcome', (req, res) => {
   const name = req.query.name || 'Invité';
-  res.send(`<h1>Bienvenue ${escapeHtml(name)}</h1>`);
+  res.status(200).json({
+    message: `Bienvenue ${String(name)}`
+  });
 });
 
 if (require.main === module || process.env.DOCKER_RUN === 'true') {

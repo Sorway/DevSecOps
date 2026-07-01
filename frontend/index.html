@@ -41,9 +41,9 @@
         <input type="text" id="pingIp" value="8.8.8.8" placeholder="Ex: 8.8.8.8 ou 8.8.8.8 ; cat /etc/passwd">
         <button onclick="testPing()">Exécuter le Ping</button>
 
-        <h4>2. Personnalisation du Profil (Route vulnérable XSS)</h4>
+        <h4>2. Personnalisation du Profil</h4>
         <input type="text" id="xssName" value="John Doe" placeholder="Ex: <script>alert('Hacked')</script>">
-        <button onclick="testWelcome()">Générer la page</button>
+        <button onclick="testWelcome()">Générer le message</button>
     </div>
 
     <div class="card">
@@ -99,8 +99,12 @@
         function testWelcome() {
             const baseUrl = getBackendUrl();
             const name = document.getElementById('xssName').value;
-            // Ouverture dans un nouvel onglet pour exécuter le potentiel script XSS (Reflected XSS)
-            window.open(baseUrl + "/api/welcome?name=" + encodeURIComponent(name), '_blank');
+            printConsole("Generation du message de bienvenue...");
+
+            fetch(baseUrl + "/api/welcome?name=" + encodeURIComponent(name))
+                .then(res => res.json())
+                .then(data => printConsole(data))
+                .catch(err => printConsole("Erreur : " + err.message));
         }
     </script>
 </body>

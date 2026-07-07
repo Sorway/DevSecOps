@@ -70,6 +70,13 @@
   margin: 0 3px;
 }
 
+/* --- Accueil : pleine largeur, sans sommaire "Sur cette page" -------------- */
+/* Ciblé uniquement sur la page qui contient le marqueur .page-home.          */
+.page-home { display: none; }
+body:has(.page-home) .md-sidebar--secondary { display: none !important; }
+body:has(.page-home) .md-main__inner { max-width: none !important; }
+body:has(.page-home) .md-content { max-width: none !important; }
+
 /* --- Bandeau de logos de l'accueil : petits, en ligne, centrés ------------ */
 .md-typeset img.logo-strip {
   height: 56px !important;

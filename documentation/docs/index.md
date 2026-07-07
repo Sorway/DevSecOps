@@ -1,16 +1,8 @@
 # SecureWallet, une chaîne de livraison sécurisée ! ♾️
 
-<div class="hero-logos">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="assets/logo_ynov_campus_sophia_white.png">
-    <img src="assets/logo_ynov_campus_sophia.png" alt="Sophia Ynov Campus">
-  </picture>
-  <img src="assets/devsecops.png" alt="DevSecOps">
-</div>
-
 ![CI/CD sécurisée](assets/ci-cd.webp){ .hero }
 
-## Projet final DevSecOps · M1 Cloud, Sécurité & Infrastructure { .section-bar }
+## Projet final DevSecOps · M1 Cloud, Sécurité & Infrastructure
 
 ---
 
@@ -22,7 +14,7 @@ Le tout est orchestré par **GitHub Actions** ![GitHub Actions](assets/github_ac
 [:material-server: API](https://projet-final-inky-iota.vercel.app){ .md-button }
 [:material-github: Dépôt](https://github.com/Sorway/DevSecOps){ .md-button }
 
-## L'Équipe sur ce lab { .section-bar }
+## L'Équipe sur ce lab
 
 <div class="team">
   <div class="member m-blue">
@@ -94,3 +86,5 @@ flowchart LR
 1. **[Contexte & consignes](contexte.md)** : ce qu'on nous demande, et comment on s'y prend.
 2. **[Implémentation](architecture.md)** : le détail technique, section par section.
 3. **[Conformité](conformite.md)** : la couverture de l'énoncé, exigence par exigence.
+
+<div class="page-home"></div>

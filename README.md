@@ -1,10 +1,13 @@
 <div align="center">
 
-<img src="docs/assets/logo_ynov_campus_sophia.png" alt="Sophia Ynov Campus" width="230"/>
-
-<br/><br/>
-
-<img src="docs/assets/devsecops.png" alt="DevSecOps" width="380"/>
+<p>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/logo_ynov_campus_sophia_white.png">
+    <img src="docs/assets/logo_ynov_campus_sophia.png" alt="Sophia Ynov Campus" height="82">
+  </picture>
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="docs/assets/devsecops.png" alt="DevSecOps" height="66">
+</p>
 
 # 🛡️ SecureWallet
 
@@ -18,7 +21,7 @@ en un pipeline durci où *aucun code n'atteint la production sans validation tec
 [![CodeQL](https://img.shields.io/badge/SAST-CodeQL-7c4dff?logo=github)](.github/workflows/ci-cd.yml)
 [![Secrets](https://img.shields.io/badge/Secrets-SOPS%20%2B%20age-26e0a8?logo=vault)](.github/secrets-prod.yaml)
 [![Container](https://img.shields.io/badge/Registry-GHCR-24292e?logo=docker&logoColor=white)](https://github.com/Sorway/DevSecOps/pkgs/container/devsecops%2Fbackend)
-[![Node](https://img.shields.io/badge/Node.js-20-339933?logo=node.js&logoColor=white)](backend/Dockerfile)
+[![Node](https://img.shields.io/badge/Node.js-24-339933?logo=node.js&logoColor=white)](backend/Dockerfile)
 
 🌐 **[Frontend (GitHub Pages)](https://sorway.github.io/DevSecOps/)**  ·  ⚙️ **[API (Vercel)](https://projet-final-inky-iota.vercel.app)**  ·  ❤️ **[Healthcheck `/api/health`](https://projet-final-inky-iota.vercel.app/api/health)**
 
@@ -59,7 +62,7 @@ la production n'accepte que du code *techniquement validé*, et chaque secret re
 
 ## 🧰 Stack technique
 
-![Node.js](https://img.shields.io/badge/Node.js-20-339933?logo=node.js&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-24-339933?logo=node.js&logoColor=white)
 ![Express](https://img.shields.io/badge/Express-4-000000?logo=express&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-multi--stage-2496ed?logo=docker&logoColor=white)
 ![GitHub Actions](https://img.shields.io/badge/CI-GitHub%20Actions-2088ff?logo=githubactions&logoColor=white)

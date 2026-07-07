@@ -30,10 +30,10 @@
 .md-typeset .hero-logos {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
+  align-items: left;
+  justify-content: left;
   gap: 2.2rem;
-  margin: 0.4rem 0 1.4rem;
+  margin: 1.6rem 0 1.4rem;
 }
 .md-typeset .hero-logos picture img {
   height: 60px !important;
@@ -69,6 +69,34 @@
   vertical-align: middle;
   margin: 0 3px;
 }
+
+/* --- "Notre démarche" : liste stylée en stepper coloré -------------------- */
+.md-typeset .demarche > ul {
+  list-style: none;
+  margin-left: 0;
+  padding-left: 0;
+}
+.md-typeset .demarche > ul > li {
+  border-left: 4px solid var(--md-primary-fg-color, #1c7ed6);
+  background: rgba(127, 127, 127, 0.08);
+  border-radius: 0 8px 8px 0;
+  padding: 0.6rem 0.9rem;
+  margin: 0.55rem 0;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.md-typeset .demarche > ul > li:hover {
+  transform: translateX(3px);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.16);
+}
+.md-typeset .demarche > ul > li > .twemoji:first-child {
+  font-size: 1.15em;
+  margin-right: 0.15rem;
+}
+.md-typeset .demarche > ul > li:nth-child(1) { border-left-color: #1c7ed6; }
+.md-typeset .demarche > ul > li:nth-child(2) { border-left-color: #7048e8; }
+.md-typeset .demarche > ul > li:nth-child(3) { border-left-color: #f59f00; }
+.md-typeset .demarche > ul > li:nth-child(4) { border-left-color: #12b886; }
+.md-typeset .demarche > ul > li:nth-child(5) { border-left-color: #e03131; }
 
 /* --- Accueil : contenu aligné sous "Accueil", sans colonnes latérales ------ */
 /* Ciblé uniquement sur la page qui contient le marqueur .page-home.          */

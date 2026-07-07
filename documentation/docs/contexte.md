@@ -56,20 +56,20 @@ pas oublier.
 
 <div class="demarche" markdown>
 
-- 🎯 **Prise en compte du besoin :** dans une équipe, plusieurs personnes touchent au même code en
+- <span class="cat cat-1">🎯 Prise en compte du besoin</span> dans une équipe, plusieurs personnes touchent au même code en
   même temps. Sans règles, n'importe qui pourrait envoyer directement en production une modification
   non testée, ou écraser le travail d'un autre. On voulait une organisation où la production reste
   intouchable et où toute l'équipe se synchronise sur une base commune, sans conflit.
-- 🎓 **Vu en cours et bonnes pratiques :** un dépôt sérieux repose sur un flux de branches clair,
+- <span class="cat cat-2">🎓 Vu en cours et bonnes pratiques</span> un dépôt sérieux repose sur un flux de branches clair,
   souvent une variante allégée du Git Flow : une branche d'**intégration** où tout converge, et une
   branche de **production verrouillée**. La bonne pratique clé, c'est que rien n'atteint la production
   sans une **Pull Request relue par un pair**, garde-fou humain en plus des contrôles automatiques.
-- 📋 **Contraintes de l'énoncé :** le workflow doit se déclencher sur `staging` **et** `main`, les
+- <span class="cat cat-3">📋 Contraintes de l'énoncé</span> le workflow doit se déclencher sur `staging` **et** `main`, les
   jobs de déploiement portent un `if` sur `main`, une matrice `needs` stricte les enchaîne, et le job
   de production est rattaché à un `environment` nommé.
-- 🛠️ **Ce qu'on met en place :** `staging` en branche par défaut, `main` protégée par un ruleset
+- <span class="cat cat-4">🛠️ Ce qu'on met en place</span> `staging` en branche par défaut, `main` protégée par un ruleset
   GitHub qui exige une revue avant fusion, et la politique rendue lisible directement dans le YAML.
-- ⚠️ **À ne pas oublier :** le push direct sur `main` est **interdit** (pas seulement déconseillé), la
+- <span class="cat cat-5">⚠️ À ne pas oublier</span> le push direct sur `main` est **interdit** (pas seulement déconseillé), la
   politique doit être **visible dans le YAML**, et le job de prod porte un `environment` nommé.
 
 </div>
@@ -92,19 +92,19 @@ flowchart LR
 
 <div class="demarche" markdown>
 
-- 🎯 **Prise en compte du besoin :** plus une erreur est détectée tôt, moins elle coûte cher. Un
+- <span class="cat cat-1">🎯 Prise en compte du besoin</span> plus une erreur est détectée tôt, moins elle coûte cher. Un
   secret oublié ou un workflow invalide qui atteint GitHub, c'est déjà une trace publique et du temps
   perdu. On voulait un premier filet **sur le poste du développeur**, avant même le premier `push`.
-- 🎓 **Vu en cours et bonnes pratiques :** c'est le principe du **Shift-Left**, « décaler vers la
+- <span class="cat cat-2">🎓 Vu en cours et bonnes pratiques</span> c'est le principe du **Shift-Left**, « décaler vers la
   gauche » les contrôles de sécurité, c'est-à-dire les rapprocher du moment où le code est écrit.
   L'outil standard est le **hook Git `pre-commit`**, un script qui s'exécute avant chaque commit et
   peut le refuser.
-- 📋 **Contraintes de l'énoncé :** valider séquentiellement `actionlint` puis `gitleaks` **sur les
+- <span class="cat cat-3">📋 Contraintes de l'énoncé</span> valider séquentiellement `actionlint` puis `gitleaks` **sur les
   fichiers indexés uniquement**, refuser tout `.env` / `.pem` / `.key` avec un message rouge, et
   s'appuyer sur une règle Gitleaks sur-mesure pour les jetons `SECWALLET_`.
-- 🛠️ **Ce qu'on met en place :** un hook **versionné** (auditable et réinstallable), trois barrières
+- <span class="cat cat-4">🛠️ Ce qu'on met en place</span> un hook **versionné** (auditable et réinstallable), trois barrières
   bloquantes successives, et une règle `SECWALLET_[A-Z0-9]{24}` couplée à une vérification d'entropie.
-- ⚠️ **À ne pas oublier :** le message rouge est imposé **au mot près**, gitleaks ne scanne que le
+- <span class="cat cat-5">⚠️ À ne pas oublier</span> le message rouge est imposé **au mot près**, gitleaks ne scanne que le
   **staged**, la règle veut **exactement 24 caractères**, et le hook doit **réellement bloquer**.
 
 </div>
@@ -130,18 +130,18 @@ flowchart TB
 
 <div class="demarche" markdown>
 
-- 🎯 **Prise en compte du besoin :** une API qui manipule des données sensibles a besoin de secrets
+- <span class="cat cat-1">🎯 Prise en compte du besoin</span> une API qui manipule des données sensibles a besoin de secrets
   (URL de base de données, clé JWT, clés d'API). Le réflexe naïf serait un fichier `.env`, mais il
   fuirait dans l'historique Git. On voulait **versionner** ces secrets sans jamais les exposer.
-- 🎓 **Vu en cours et bonnes pratiques :** le **chiffrement par enveloppe** dans une logique
+- <span class="cat cat-2">🎓 Vu en cours et bonnes pratiques</span> le **chiffrement par enveloppe** dans une logique
   **GitOps** : stocker les secrets **chiffrés** dans le dépôt et ne les déchiffrer qu'au dernier
   moment, au runtime. On utilise **age** pour la paire de clés et **SOPS** pour chiffrer le fichier.
-- 📋 **Contraintes de l'énoncé :** clé privée nommée `ops.txt`, chiffrement **des seules valeurs**
+- <span class="cat cat-3">📋 Contraintes de l'énoncé</span> clé privée nommée `ops.txt`, chiffrement **des seules valeurs**
   (clés YAML lisibles pour des `git diff` propres), et déchiffrement en CD **en RAM**, sans jamais
   écrire de secret sur le disque du runner.
-- 🛠️ **Ce qu'on met en place :** une paire `age`, un `encrypted_regex` qui ne cible que les valeurs,
+- <span class="cat cat-4">🛠️ Ce qu'on met en place</span> une paire `age`, un `encrypted_regex` qui ne cible que les valeurs,
   et la clé `SOPS_AGE_KEY` lue directement depuis une variable d'environnement, donc en mémoire.
-- ⚠️ **À ne pas oublier :** `ops.txt` reste **hors du dépôt**, **seules les valeurs** sont chiffrées,
+- <span class="cat cat-5">⚠️ À ne pas oublier</span> `ops.txt` reste **hors du dépôt**, **seules les valeurs** sont chiffrées,
   et **aucun fichier de secret en clair** ne doit toucher le disque (donc pas de `mktemp`).
 
 </div>
@@ -166,19 +166,19 @@ flowchart LR
 
 <div class="demarche" markdown>
 
-- 🎯 **Prise en compte du besoin :** pour livrer le backend de façon fiable, il faut qu'il tourne
+- <span class="cat cat-1">🎯 Prise en compte du besoin</span> pour livrer le backend de façon fiable, il faut qu'il tourne
   partout pareil. On voulait un artefact reproductible (une image Docker), sans le reconstruire à
   chaque fois qu'on modifie une virgule du frontend.
-- 🎓 **Vu en cours et bonnes pratiques :** le **multi-stage build** (on installe dans un premier
+- <span class="cat cat-2">🎓 Vu en cours et bonnes pratiques</span> le **multi-stage build** (on installe dans un premier
   étage, on ne garde que le nécessaire dans l'image finale, plus légère et avec moins de surface
   d'attaque), l'exécution **non-root**, le **scan de vulnérabilités avant publication**, et un tag
   **immuable** (le SHA) plutôt que `latest`.
-- 📋 **Contraintes de l'énoncé :** image multi-stage, build **conditionné au filtrage de chemins**,
+- <span class="cat cat-3">📋 Contraintes de l'énoncé</span> image multi-stage, build **conditionné au filtrage de chemins**,
   scan Trivy **avant** publication, et push GHCR seulement si le scan est clean, taggé au SHA.
-- 🛠️ **Ce qu'on met en place :** un `Dockerfile` à deux étages (`deps` puis `runtime`), un
+- <span class="cat cat-4">🛠️ Ce qu'on met en place</span> un `Dockerfile` à deux étages (`deps` puis `runtime`), un
   utilisateur dédié `nodeapp`, un filtre `dorny/paths-filter`, un `trivy image` bloquant, et un push
   conditionnel.
-- ⚠️ **À ne pas oublier :** multi-stage **et** non-root, rebuild **seulement si** le backend change,
+- <span class="cat cat-5">⚠️ À ne pas oublier</span> multi-stage **et** non-root, rebuild **seulement si** le backend change,
   scan **avant** le push, et tag **= SHA** (pas `latest`).
 
 </div>
@@ -202,17 +202,17 @@ flowchart LR
 
 <div class="demarche" markdown>
 
-- 🎯 **Prise en compte du besoin :** une chaîne CI/CD n'a de valeur que si elle est **infranchissable**.
+- <span class="cat cat-1">🎯 Prise en compte du besoin</span> une chaîne CI/CD n'a de valeur que si elle est **infranchissable**.
   Si un développeur peut contourner un test qui échoue, la barrière ne sert plus à rien. On voulait un
   pipeline strict, où un seul contrôle en échec bloque tout le reste.
-- 🎓 **Vu en cours et bonnes pratiques :** le **moindre privilège** sur les jetons, l'analyse statique
+- <span class="cat cat-2">🎓 Vu en cours et bonnes pratiques</span> le **moindre privilège** sur les jetons, l'analyse statique
   (**SAST**) avec CodeQL, le principe **fail-fast**, et l'interdiction de tout contournement (le
   fameux `continue-on-error`).
-- 📋 **Contraintes de l'énoncé :** `permissions: contents: read` global, cache Node, CodeQL + SARIF
+- <span class="cat cat-3">📋 Contraintes de l'énoncé</span> `permissions: contents: read` global, cache Node, CodeQL + SARIF
   avec échec sur `High`/`Error`, tests et Gitleaks bloquants, `continue-on-error` interdit, CD dépendante.
-- 🛠️ **Ce qu'on met en place :** des permissions globales en lecture seule (écritures ouvertes
+- <span class="cat cat-4">🛠️ Ce qu'on met en place</span> des permissions globales en lecture seule (écritures ouvertes
   uniquement dans le job concerné), un contrôle `jq` sur le rapport SARIF, et un graphe `needs` strict.
-- ⚠️ **À ne pas oublier :** `contents: read` **global**, écritures **isolées**, `continue-on-error`
+- <span class="cat cat-5">⚠️ À ne pas oublier</span> `contents: read` **global**, écritures **isolées**, `continue-on-error`
   **interdit**, CodeQL doit **faire échouer** sur une faille majeure, et le **SARIF est téléversé**.
 
 </div>
@@ -239,17 +239,17 @@ flowchart LR
 
 <div class="demarche" markdown>
 
-- 🎯 **Prise en compte du besoin :** le scan de dépendances (via un SBOM) pourrait être réutilisé à
+- <span class="cat cat-1">🎯 Prise en compte du besoin</span> le scan de dépendances (via un SBOM) pourrait être réutilisé à
   plusieurs endroits. Copier-coller la même suite de commandes serait fragile et pénible à maintenir.
   On voulait un composant unique, autonome et réutilisable.
-- 🎓 **Vu en cours et bonnes pratiques :** le principe **DRY** (« Don't Repeat Yourself »), qui pousse
+- <span class="cat cat-2">🎓 Vu en cours et bonnes pratiques</span> le principe **DRY** (« Don't Repeat Yourself »), qui pousse
   à factoriser la logique répétée, et la notion de **boîte noire** : une action masque sa complexité
   derrière des **entrées** et **sorties** claires.
-- 📋 **Contraintes de l'énoncé :** type `composite`, **entrée obligatoire** (le chemin du SBOM
+- <span class="cat cat-3">📋 Contraintes de l'énoncé</span> type `composite`, **entrée obligatoire** (le chemin du SBOM
   CycloneDX), échec **uniquement** sur `CRITICAL`, et simple **avertissement** pour `HIGH` et `MEDIUM`.
-- 🛠️ **Ce qu'on met en place :** un `action.yml` composite, une entrée requise, l'installation de
+- <span class="cat cat-4">🛠️ Ce qu'on met en place</span> un `action.yml` composite, une entrée requise, l'installation de
   Trivy intégrée à l'action, et deux niveaux de sévérité distincts.
-- ⚠️ **À ne pas oublier :** type **composite** avec entrée **obligatoire**, échec **seulement sur
+- <span class="cat cat-5">⚠️ À ne pas oublier</span> type **composite** avec entrée **obligatoire**, échec **seulement sur
   CRITICAL**, `HIGH`/`MEDIUM` en **avertissement**, et l'action **installe Trivy elle-même**.
 
 </div>
@@ -276,18 +276,18 @@ flowchart LR
 
 <div class="demarche" markdown>
 
-- 🎯 **Prise en compte du besoin :** une fois la CI verte, on veut une mise en production
+- <span class="cat cat-1">🎯 Prise en compte du besoin</span> une fois la CI verte, on veut une mise en production
   **automatique** et sans intervention manuelle, mais uniquement pour du code validé, et sans laisser
   traîner un secret au passage.
-- 🎓 **Vu en cours et bonnes pratiques :** l'**OIDC** (OpenID Connect), qui donne à GitHub une
+- <span class="cat cat-2">🎓 Vu en cours et bonnes pratiques</span> l'**OIDC** (OpenID Connect), qui donne à GitHub une
   **identité temporaire** auprès du service cible sans secret longue durée (plus sûr qu'un token
   permanent), le déploiement **hermétique** (artefact éphémère), et l'injection des secrets **à la volée**.
-- 📋 **Contraintes de l'énoncé :** déploiement **sur `main` uniquement** et seulement si toute la CI
+- <span class="cat cat-3">📋 Contraintes de l'énoncé</span> déploiement **sur `main` uniquement** et seulement si toute la CI
   est verte, frontend sur GitHub Pages en **OIDC** (`pages: write` + `id-token: write`), backend sur
   Vercel avec secrets déchiffrés en RAM.
-- 🛠️ **Ce qu'on met en place :** deux jobs conditionnés à `main` et dépendants de tout,
+- <span class="cat cat-4">🛠️ Ce qu'on met en place</span> deux jobs conditionnés à `main` et dépendants de tout,
   `upload-pages-artifact` + `deploy-pages` pour le frontend, et `vercel deploy` avec les variables en `--env`.
-- ⚠️ **À ne pas oublier :** déploiement sur `main` **uniquement** et CI **verte**, **OIDC** (`pages` +
+- <span class="cat cat-5">⚠️ À ne pas oublier</span> déploiement sur `main` **uniquement** et CI **verte**, **OIDC** (`pages` +
   `id-token`), et secrets **injectés à la volée** sans rien écrire sur le disque.
 
 </div>
@@ -312,18 +312,18 @@ flowchart LR
 
 <div class="demarche" markdown>
 
-- 🎯 **Prise en compte du besoin :** deux risques restaient à couvrir. Gaspiller des ressources (et
+- <span class="cat cat-1">🎯 Prise en compte du besoin</span> deux risques restaient à couvrir. Gaspiller des ressources (et
   créer des conflits de déploiement) quand plusieurs commits arrivent coup sur coup, et déployer une
   version cassée sans s'en rendre compte.
-- 🎓 **Vu en cours et bonnes pratiques :** l'**annulation de concurrence**, qui stoppe
+- <span class="cat cat-2">🎓 Vu en cours et bonnes pratiques</span> l'**annulation de concurrence**, qui stoppe
   automatiquement les exécutions devenues inutiles, et le **healthcheck** (smoke test) juste après le
   déploiement, une petite requête qui confirme que l'application répond vraiment.
-- 📋 **Contraintes de l'énoncé :** si deux commits sont poussés coup sur coup, le pipeline du premier
+- <span class="cat cat-3">📋 Contraintes de l'énoncé</span> si deux commits sont poussés coup sur coup, le pipeline du premier
   doit **s'annuler immédiatement**, et une requête `curl` vers `/api/health` doit **faire échouer** le
   job si la réponse n'est pas `200`.
-- 🛠️ **Ce qu'on met en place :** un bloc `concurrency` avec `cancel-in-progress`, et un `curl --fail`
+- <span class="cat cat-4">🛠️ Ce qu'on met en place</span> un bloc `concurrency` avec `cancel-in-progress`, et un `curl --fail`
   sur l'URL de production générée dynamiquement par Vercel.
-- ⚠️ **À ne pas oublier :** annulation **immédiate** du run périmé, healthcheck sur l'**URL
+- <span class="cat cat-5">⚠️ À ne pas oublier</span> annulation **immédiate** du run périmé, healthcheck sur l'**URL
   dynamique**, et tout code de réponse **différent de 200** fait **échouer** le job.
 
 </div>
@@ -345,3 +345,5 @@ flowchart LR
 Chaque exigence est reprise, **avec sa preuve** (extrait de code, configuration, déploiement en
 ligne), sur la page [Conformité](conformite.md). Le détail technique complet se trouve dans la section
 [Implémentation](architecture.md).
+
+<div class="page-noleft"></div>

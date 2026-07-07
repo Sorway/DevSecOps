@@ -41,23 +41,34 @@ flowchart LR
 ```
 
 Chaque étage ci-dessus est une **garantie** ajoutée. On détaille maintenant chaque thème selon la
-même démarche : le besoin, ce qu'on a vu en cours et les bonnes pratiques, les contraintes de
-l'énoncé, ce qu'on met en place, et ce qu'on ne doit pas oublier.
+même démarche : le besoin auquel il répond, ce qu'on a vu en cours et les bonnes pratiques associées,
+les contraintes précises de l'énoncé, ce qu'on a concrètement mis en place, et enfin les points à ne
+pas oublier.
 
 ## 1. La gouvernance des branches
 
+![GitHub](assets/github.png){ .logo-md }
+
 **Notre démarche :**
 
-- **Prise en compte du besoin :** éviter qu'une personne modifie la production sans contrôle, tout en
-  donnant à l'équipe une base commune où se synchroniser sans conflit.
-- **Vu en cours et bonnes pratiques :** un flux Git à branche protégée, une branche d'intégration, une
-  branche de production verrouillée, et *tout passe par une Pull Request revue* par les pairs.
-- **Contraintes de l'énoncé :** déclenchement sur `staging` **et** `main`, blocs `if` sur `main`,
-  matrice `needs` stricte, et job de production lié à un `environment` nommé.
-- **Ce qu'on met en place :** `staging` en branche par défaut, un ruleset GitHub qui exige une revue
-  sur `main`, et une politique rendue visible dans le workflow lui-même.
-- **À ne pas oublier :** le push direct sur `main` est **interdit** (pas déconseillé), la politique
-  doit être **visible dans le YAML**, et le job de prod porte un `environment` nommé.
+- **Prise en compte du besoin :** dans une équipe, plusieurs personnes touchent au même code en même
+  temps. Sans règles, n'importe qui pourrait envoyer directement en production une modification non
+  testée, ou écraser le travail d'un autre. On voulait donc une organisation où la production reste
+  intouchable et où toute l'équipe se synchronise sur une base commune, sans conflit ni mauvaise
+  surprise.
+- **Vu en cours et bonnes pratiques :** on a vu qu'un dépôt sérieux repose sur un flux de branches
+  clair, souvent une variante allégée du Git Flow : une branche d'**intégration** où tout converge, et
+  une branche de **production verrouillée**. La bonne pratique clé, c'est que rien n'atteint la branche
+  de production sans passer par une **Pull Request relue par un pair**. La revue de code joue le rôle
+  de garde-fou humain, en complément des contrôles automatiques.
+- **Contraintes de l'énoncé :** le workflow doit se déclencher sur `staging` **et** `main`, les jobs de
+  déploiement portent un `if` sur `main`, une matrice `needs` stricte les enchaîne, et le job de
+  production est rattaché à un `environment` nommé.
+- **Ce qu'on met en place :** on a défini `staging` comme branche par défaut (pour que tout parte
+  d'elle), protégé `main` avec un ruleset GitHub qui exige une revue avant fusion, et rendu la
+  politique lisible directement dans le YAML.
+- **À ne pas oublier :** le push direct sur `main` est **interdit** (pas seulement déconseillé), la
+  politique doit être **visible dans le YAML** lui-même, et le job de prod porte un `environment` nommé.
 
 ```mermaid
 flowchart LR
@@ -73,18 +84,26 @@ flowchart LR
 
 ## 2. Le durcissement local (Shift-Left)
 
+![GitHub Actions](assets/github_actions.png){ .logo-md }
+
 **Notre démarche :**
 
-- **Prise en compte du besoin :** une erreur attrapée sur le poste coûte bien moins cher qu'une erreur
-  découverte en production ; on veut donc filtrer au plus tôt.
-- **Vu en cours et bonnes pratiques :** le principe **Shift-Left**, déplacer les contrôles de sécurité
-  vers le début de la chaîne. Les hooks Git `pre-commit` sont l'outil standard pour ça.
-- **Contraintes de l'énoncé :** validation séquentielle `actionlint` + `gitleaks` **sur les fichiers
-  indexés uniquement**, refus `.env`/`.pem`/`.key` avec message rouge, et règle `SECWALLET_` sur-mesure.
-- **Ce qu'on met en place :** un hook versionné (auditable et réinstallable), trois barrières
-  bloquantes, et une règle Gitleaks `SECWALLET_[A-Z0-9]{24}` avec entropie.
+- **Prise en compte du besoin :** plus une erreur est détectée tôt, moins elle coûte cher. Un secret
+  oublié ou un workflow invalide qui atteint GitHub, c'est déjà une trace publique et du temps perdu.
+  On voulait donc un premier filet **sur le poste du développeur**, avant même le premier `push`.
+- **Vu en cours et bonnes pratiques :** c'est exactement le principe du **Shift-Left**, qu'on a étudié
+  en cours : « décaler vers la gauche » les contrôles de sécurité, c'est-à-dire les rapprocher du
+  moment où le code est écrit. L'outil standard pour ça est le **hook Git `pre-commit`**, un script qui
+  s'exécute automatiquement avant chaque commit et peut le refuser.
+- **Contraintes de l'énoncé :** le hook doit valider séquentiellement `actionlint` sur les workflows
+  puis `gitleaks` **sur les fichiers indexés uniquement**, refuser tout `.env` / `.pem` / `.key` avec
+  un message rouge, et s'appuyer sur une règle Gitleaks sur-mesure pour les jetons `SECWALLET_`.
+- **Ce qu'on met en place :** un hook **versionné** (donc auditable et réinstallable par toute
+  l'équipe), construit comme trois barrières bloquantes successives, et une règle
+  `SECWALLET_[A-Z0-9]{24}` couplée à une vérification d'entropie.
 - **À ne pas oublier :** le message rouge est imposé **au mot près**, gitleaks ne scanne que le
-  **staged**, la règle veut **exactement 24 caractères**, et le hook doit **réellement bloquer**.
+  **staged**, la règle veut **exactement 24 caractères**, et le hook doit **réellement bloquer** le
+  commit (code de sortie non nul), pas seulement afficher un avertissement.
 
 ```mermaid
 flowchart TB
@@ -103,18 +122,27 @@ flowchart TB
 
 ## 3. Les secrets par enveloppe
 
+![SOPS](assets/sops.png){ .logo-md }
+
 **Notre démarche :**
 
-- **Prise en compte du besoin :** stocker des secrets de prod dans un dépôt Git sans jamais les
-  exposer, tout en gardant un fichier qu'on peut relire et auditer.
-- **Vu en cours et bonnes pratiques :** le **chiffrement par enveloppe** et la philosophie **GitOps**,
-  les secrets vivent chiffrés dans le dépôt et ne sont déchiffrés qu'au runtime, avec `age` et **SOPS**.
-- **Contraintes de l'énoncé :** clé privée nommée `ops.txt`, chiffrement **des seules valeurs** (clés
-  YAML lisibles), et déchiffrement en RAM sans jamais écrire de secret sur le disque du runner.
-- **Ce qu'on met en place :** une paire `age`, un `encrypted_regex` qui ne chiffre que les valeurs, et
-  `SOPS_AGE_KEY` lu directement en mémoire au déploiement.
-- **À ne pas oublier :** `ops.txt` reste hors du dépôt, **seules les valeurs** sont chiffrées, et
-  **aucun fichier de secret en clair** ne touche le disque (donc pas de `mktemp`).
+- **Prise en compte du besoin :** une API qui manipule des données sensibles a besoin de secrets
+  (URL de base de données, clé JWT, clés d'API). Le réflexe naïf serait de les mettre dans un fichier
+  `.env`, mais alors ils fuiraient dans l'historique Git. On voulait pouvoir **versionner** ces
+  secrets sans jamais les exposer en clair, tout en gardant un fichier qu'un Ops peut relire.
+- **Vu en cours et bonnes pratiques :** la réponse, c'est le **chiffrement par enveloppe** dans une
+  logique **GitOps**. On a vu que l'idée est de stocker les secrets **chiffrés** dans le dépôt, et de
+  ne les déchiffrer qu'au dernier moment, au runtime. On utilise **age** (un outil de chiffrement
+  moderne et simple) pour la paire de clés, et **SOPS** pour chiffrer intelligemment le fichier.
+- **Contraintes de l'énoncé :** la clé privée doit s'appeler `ops.txt`, SOPS ne doit chiffrer **que
+  les valeurs** (les clés YAML restent lisibles pour des `git diff` propres), et le déchiffrement en
+  CD doit se faire **en RAM**, sans jamais écrire de secret sur le disque du runner.
+- **Ce qu'on met en place :** une paire `age`, un `encrypted_regex` qui cible uniquement les valeurs
+  à chiffrer, et au déploiement la clé `SOPS_AGE_KEY` lue directement depuis une variable
+  d'environnement, donc en mémoire.
+- **À ne pas oublier :** `ops.txt` reste **hors du dépôt**, **seules les valeurs** sont chiffrées, et
+  **aucun fichier de secret en clair** ne doit toucher le disque du runner (donc surtout pas de
+  `mktemp`).
 
 ```mermaid
 flowchart LR
@@ -132,19 +160,25 @@ flowchart LR
 
 ## 4. La conteneurisation et GHCR
 
+![Docker](assets/docker.png){ .logo-md }
+
 **Notre démarche :**
 
-- **Prise en compte du besoin :** livrer le backend sous une forme reproductible et sûre, sans
-  gaspiller de temps à reconstruire l'image quand rien n'a changé.
-- **Vu en cours et bonnes pratiques :** le `Dockerfile` **multi-stage** (image finale minimale),
-  l'exécution **non-root**, le scan de vulnérabilités **avant** publication, et un tag **immuable**
-  (le SHA) plutôt que `latest`.
-- **Contraintes de l'énoncé :** multi-stage, build conditionné au **filtrage de chemins**, scan Trivy
-  avant publication, et push GHCR seulement si le scan réussit, taggé au SHA du commit.
-- **Ce qu'on met en place :** deux étages `deps` / `runtime`, un utilisateur `nodeapp`, un filtre
-  `dorny/paths-filter`, `trivy image`, et un push conditionnel.
-- **À ne pas oublier :** multi-stage **et** non-root, rebuild **seulement si** concerné, scan **avant**
-  le push, et tag **= SHA** (pas `latest`).
+- **Prise en compte du besoin :** pour livrer le backend de façon fiable, il faut qu'il tourne partout
+  pareil, quelle que soit la machine. On voulait donc un artefact reproductible (une image Docker),
+  tout en évitant de le reconstruire à chaque fois qu'on modifie une virgule du frontend.
+- **Vu en cours et bonnes pratiques :** on a vu plusieurs bonnes pratiques d'image Docker : le
+  **multi-stage build** (on compile / installe dans un premier étage, et on ne garde que le strict
+  nécessaire dans l'image finale, plus légère et avec moins de surface d'attaque), l'exécution en
+  **non-root**, le **scan de vulnérabilités avant publication**, et l'usage d'un **tag immuable** (le
+  SHA du commit) plutôt que `latest`, qui change tout le temps.
+- **Contraintes de l'énoncé :** image multi-stage, build **conditionné au filtrage de chemins**, scan
+  Trivy de l'image **avant** toute publication, et push sur GHCR seulement si le scan est clean, avec
+  l'image taggée au SHA du commit.
+- **Ce qu'on met en place :** un `Dockerfile` à deux étages (`deps` puis `runtime`), un utilisateur
+  dédié `nodeapp`, un filtre `dorny/paths-filter`, un `trivy image` bloquant, et un push conditionnel.
+- **À ne pas oublier :** multi-stage **et** non-root, rebuild **seulement si** le backend change, scan
+  **avant** le push, et tag **= SHA** du commit (pas `latest`).
 
 ```mermaid
 flowchart LR
@@ -161,18 +195,27 @@ flowchart LR
 
 ## 5. La CI durcie, une vraie barrière
 
+![Intégration continue](assets/ci.png){ .logo-md }
+
 **Notre démarche :**
 
-- **Prise en compte du besoin :** que le pipeline soit une vraie barrière qu'on ne peut pas contourner,
-  et non une simple formalité qui laisse passer un problème.
-- **Vu en cours et bonnes pratiques :** le **moindre privilège** sur les jetons, l'analyse statique
-  (**SAST**) avec CodeQL, le principe **fail-fast**, et l'interdiction de tout contournement.
-- **Contraintes de l'énoncé :** `permissions: contents: read` global, cache Node, CodeQL + SARIF avec
-  échec sur `High`/`Error`, tests et Gitleaks bloquants, `continue-on-error` interdit, CD dépendante.
-- **Ce qu'on met en place :** des permissions globales en lecture seule, des écritures isolées par job,
-  un contrôle `jq` sur le rapport SARIF, et un graphe `needs` strict.
-- **À ne pas oublier :** `contents: read` **global**, écritures **isolées**, `continue-on-error`
-  **interdit**, CodeQL doit **faire échouer** sur une faille majeure, et le **SARIF est téléversé**.
+- **Prise en compte du besoin :** une chaîne CI/CD n'a de valeur que si elle est **infranchissable**.
+  Si un développeur peut contourner un test qui échoue, la barrière ne sert plus à rien. On voulait un
+  pipeline strict, où un seul contrôle en échec bloque tout le reste.
+- **Vu en cours et bonnes pratiques :** on a appliqué plusieurs principes vus en cours. Le **moindre
+  privilège** : par défaut, un job ne doit avoir que les droits strictement nécessaires. L'**analyse
+  statique de sécurité (SAST)** avec CodeQL, qui lit le code sans l'exécuter pour repérer des failles.
+  Le **fail-fast** : on arrête dès qu'un problème apparaît. Et l'interdiction de tout **contournement**
+  (le fameux `continue-on-error`).
+- **Contraintes de l'énoncé :** `permissions: contents: read` au niveau global, cache des dépendances
+  Node, CodeQL avec téléversement du SARIF et échec sur `High`/`Error`, tests et Gitleaks bloquants,
+  `continue-on-error` interdit, et déploiements dépendants de tous ces contrôles.
+- **Ce qu'on met en place :** des permissions globales en lecture seule (les écritures comme
+  `packages: write` sont ouvertes uniquement dans le job concerné), un contrôle `jq` sur le rapport
+  SARIF qui fait échouer le job en cas de faille majeure, et un graphe `needs` strict.
+- **À ne pas oublier :** `contents: read` **global**, écritures **isolées** par job,
+  `continue-on-error` **interdit**, CodeQL doit **faire échouer** sur une faille majeure, et le
+  **SARIF est téléversé**.
 
 ```mermaid
 flowchart LR
@@ -192,18 +235,25 @@ flowchart LR
 
 ## 6. La composite action
 
+![Trivy](assets/trivy.png){ .logo-md }
+
 **Notre démarche :**
 
-- **Prise en compte du besoin :** éviter de copier-coller la même logique de scan dans plusieurs
-  workflows, et la partager comme un composant autonome.
-- **Vu en cours et bonnes pratiques :** factoriser la logique répétée (principe **DRY**) et exposer
-  une **boîte noire** qui masque sa complexité derrière des entrées / sorties claires.
-- **Contraintes de l'énoncé :** type `composite`, entrée obligatoire (le chemin du SBOM CycloneDX),
-  échec **uniquement** sur `CRITICAL`, et simple **avertissement** pour `HIGH` et `MEDIUM`.
+- **Prise en compte du besoin :** le scan de dépendances (via un SBOM) est le genre d'étape qu'on
+  pourrait vouloir réutiliser à plusieurs endroits. Copier-coller la même suite de commandes serait
+  fragile et difficile à maintenir. On voulait donc un composant unique, autonome et réutilisable.
+- **Vu en cours et bonnes pratiques :** deux idées se rejoignent ici. Le principe **DRY** (« Don't
+  Repeat Yourself »), qui pousse à factoriser la logique répétée. Et la notion de **boîte noire** :
+  une action doit masquer sa complexité derrière des **entrées** et **sorties** claires, pour que
+  celui qui l'utilise n'ait pas à savoir comment elle fonctionne à l'intérieur.
+- **Contraintes de l'énoncé :** l'action doit être de type `composite`, accepter une **entrée
+  obligatoire** (le chemin du SBOM au format CycloneDX), échouer **uniquement** sur des vulnérabilités
+  `CRITICAL`, et se contenter d'un **avertissement** dans le résumé pour les `HIGH` et `MEDIUM`.
 - **Ce qu'on met en place :** un `action.yml` composite, une entrée requise, l'installation de Trivy
-  intégrée, et deux niveaux de sévérité.
-- **À ne pas oublier :** type **composite** avec entrée **obligatoire**, échec **seulement CRITICAL**,
-  `HIGH`/`MEDIUM` en **avertissement**, et l'action **installe Trivy elle-même**.
+  intégrée à l'action (pour qu'elle soit vraiment autonome), et deux niveaux de sévérité distincts.
+- **À ne pas oublier :** type **composite** avec entrée **obligatoire**, échec **seulement sur
+  CRITICAL**, `HIGH`/`MEDIUM` en simple **avertissement**, et l'action **installe Trivy elle-même**
+  pour rester une boîte noire portable.
 
 ```mermaid
 flowchart LR
@@ -223,18 +273,26 @@ flowchart LR
 
 ## 7. Le déploiement continu
 
+![Déploiement continu](assets/cd.png){ .logo-md }
+
 **Notre démarche :**
 
-- **Prise en compte du besoin :** automatiser la mise en production, mais uniquement quand tout est
-  validé, et sans jamais exposer un secret au passage.
-- **Vu en cours et bonnes pratiques :** l'**OIDC** (identité fédérée, sans secret longue durée) pour
-  Pages, le déploiement **hermétique** (artefact éphémère), et l'injection des secrets **à la volée**.
-- **Contraintes de l'énoncé :** déploiement `main` uniquement et CI verte, frontend en OIDC
-  (`pages: write` + `id-token: write`), backend Vercel avec secrets déchiffrés en RAM.
-- **Ce qu'on met en place :** deux jobs conditionnés à `main` et dépendants de tout, `upload-pages` +
-  `deploy-pages`, et `vercel deploy` avec les variables passées en `--env`.
-- **À ne pas oublier :** `main` **uniquement** et CI **verte**, **OIDC** (`pages` + `id-token`), et
-  secrets **injectés à la volée** sans rien écrire sur le disque.
+- **Prise en compte du besoin :** une fois la CI verte, on veut que la mise en production soit
+  **automatique** et sans intervention manuelle, mais uniquement pour du code validé, et sans jamais
+  laisser traîner un secret au passage.
+- **Vu en cours et bonnes pratiques :** on a découvert l'**OIDC** (OpenID Connect), qui permet à
+  GitHub d'obtenir une **identité temporaire** auprès du service cible, sans stocker de secret longue
+  durée : c'est plus sûr qu'un token permanent. On a aussi vu le déploiement **hermétique** (via un
+  artefact éphémère, sans polluer l'historique Git) et l'injection des secrets **à la volée** dans la
+  commande de déploiement.
+- **Contraintes de l'énoncé :** déploiement **sur `main` uniquement** et seulement si toute la CI est
+  verte, frontend publié sur GitHub Pages en **OIDC** (`pages: write` + `id-token: write`), et backend
+  déployé sur Vercel avec les secrets déchiffrés en RAM.
+- **Ce qu'on met en place :** deux jobs conditionnés à `main` et dépendants de tous les contrôles,
+  `upload-pages-artifact` + `deploy-pages` pour le frontend, et `vercel deploy` avec les variables
+  passées en `--env` pour le backend.
+- **À ne pas oublier :** déploiement sur `main` **uniquement** et CI **verte**, **OIDC** (`pages` +
+  `id-token`), et secrets **injectés à la volée** sans jamais rien écrire sur le disque.
 
 ```mermaid
 flowchart LR
@@ -256,16 +314,19 @@ flowchart LR
 
 **Notre démarche :**
 
-- **Prise en compte du besoin :** ne pas gaspiller de ressources sur un commit déjà remplacé, et ne
-  jamais laisser une version cassée en ligne sans le savoir.
-- **Vu en cours et bonnes pratiques :** l'**annulation de concurrence** (on stoppe les exécutions
-  périmées) et le **healthcheck** (smoke test) juste après le déploiement.
-- **Contraintes de l'énoncé :** le pipeline du premier de deux commits rapprochés doit s'annuler, et
-  un `curl` sur `/api/health` doit faire échouer le job si la réponse n'est pas `200`.
-- **Ce qu'on met en place :** une `concurrency` avec `cancel-in-progress`, et un `curl --fail` sur
-  l'URL de production générée dynamiquement.
+- **Prise en compte du besoin :** deux risques concrets restaient à couvrir. D'abord, gaspiller des
+  ressources (et créer des conflits de déploiement) quand plusieurs commits arrivent coup sur coup.
+  Ensuite, déployer une version cassée sans s'en rendre compte.
+- **Vu en cours et bonnes pratiques :** on a vu l'**annulation de concurrence**, qui stoppe
+  automatiquement les exécutions devenues inutiles, et le **healthcheck** (ou smoke test) juste après
+  le déploiement, une petite requête qui confirme que l'application répond vraiment.
+- **Contraintes de l'énoncé :** si deux commits sont poussés coup sur coup, le pipeline du premier
+  doit **s'annuler immédiatement**, et une requête `curl` vers `/api/health` doit **faire échouer** le
+  job si la réponse n'est pas `200`.
+- **Ce qu'on met en place :** un bloc `concurrency` avec `cancel-in-progress`, et un `curl --fail` sur
+  l'URL de production générée dynamiquement par Vercel.
 - **À ne pas oublier :** annulation **immédiate** du run périmé, healthcheck sur l'**URL dynamique**,
-  et tout code **différent de 200** fait **échouer** le job.
+  et tout code de réponse **différent de 200** fait **échouer** le job.
 
 ```mermaid
 flowchart LR

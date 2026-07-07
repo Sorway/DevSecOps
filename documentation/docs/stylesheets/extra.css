@@ -7,6 +7,7 @@
 /* On force la hauteur car le CSS responsive du thème (img { height:auto })
    écrase l'attribut height=. La classe + !important reprend la main.        */
 .md-typeset p:has(> img.logo),
+.md-typeset p:has(> img.logo-md),
 .md-typeset p:has(> img.logo-strip) {
   text-align: center;
 }
@@ -15,6 +16,14 @@
   width: auto !important;
   vertical-align: middle;
   margin: 12px;
+}
+
+/* Illustrations de thème (page Contexte) : taille intermédiaire */
+.md-typeset img.logo-md {
+  height: 150px !important;
+  width: auto !important;
+  vertical-align: middle;
+  margin: 10px;
 }
 
 /* --- Bandeau de logos de l'accueil : petits, en ligne, centrés ------------ */

@@ -3,15 +3,41 @@
    Diagrammes Mermaid colorés et animés (flux "marching ants").
    ========================================================================= */
 
-/* --- Logos d'outils dans le contenu : taille fixe, petite et uniforme ----- */
+/* --- Logos sous les titres : grande illustration centrée ------------------ */
 /* On force la hauteur car le CSS responsive du thème (img { height:auto })
    écrase l'attribut height=. La classe + !important reprend la main.        */
-.md-typeset img.logo,
-.md-typeset p.logo img {
-  height: 40px !important;
+.md-typeset p:has(> img.logo),
+.md-typeset p:has(> img.logo-strip) {
+  text-align: center;
+}
+.md-typeset img.logo {
+  height: 256px !important;
   width: auto !important;
   vertical-align: middle;
-  margin: 2px 10px 2px 0;
+  margin: 12px;
+}
+
+/* --- Bandeau de logos de l'accueil : petits, en ligne, centrés ------------ */
+.md-typeset img.logo-strip {
+  height: 44px !important;
+  width: auto !important;
+  vertical-align: middle;
+  margin: 4px 8px;
+}
+
+/* --- Zone de contenu élargie (utile sur les pages sans menu latéral) ------ */
+.md-grid {
+  max-width: 72rem;
+}
+
+/* --- Diagrammes Mermaid plus grands et centrés ---------------------------- */
+.md-typeset .mermaid {
+  text-align: center;
+}
+.md-typeset .mermaid svg {
+  max-width: 100% !important;
+  width: 100%;
+  height: auto;
 }
 
 /* --- Flux animé sur les liens des flowcharts ------------------------------ */

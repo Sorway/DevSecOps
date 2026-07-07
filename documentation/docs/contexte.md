@@ -41,7 +41,7 @@ flowchart LR
 ```
 
 Chaque étage ci-dessus est une **garantie** ajoutée. On les détaille maintenant, thème par thème :
-pour chacun, ce qu'on nous demande, puis comment on a décidé de nous y prendre.
+pour chacun, ce qu'on nous demande, comment on s'y prend, et surtout ce qu'on ne doit pas oublier.
 
 ## 1. La gouvernance des branches
 
@@ -53,8 +53,13 @@ sur laquelle personne ne pousse directement. La politique doit être **lisible d
 naturellement d'elle. `main` est verrouillée par un ruleset GitHub qui **exige une revue** avant
 toute fusion. Et surtout, on a rendu la règle visible directement dans le workflow : il se déclenche
 sur les deux branches, les jobs de déploiement portent un `if` sur `main`, une chaîne `needs` stricte,
-et un `environment` nommé. Un correcteur qui lit le fichier comprend la politique sans qu'on ait à
-l'expliquer.
+et un `environment` nommé.
+
+**À ne pas oublier.**
+
+- Le push direct sur `main` est **strictement interdit** (pas seulement déconseillé).
+- La politique doit être **visible dans le YAML**, pas uniquement documentée à côté.
+- Le job de production doit être lié à un **`environment` nommé** (`production` / `github-pages`).
 
 ```mermaid
 flowchart LR
@@ -74,10 +79,18 @@ flowchart LR
 hook `pre-commit` : valider les workflows avec `actionlint`, scanner les fichiers indexés avec
 `gitleaks`, et refuser tout fichier `.env`, `.pem` ou `.key` avec un message d'erreur rouge.
 
-**Comment on s'y prend.** L'idée du « Shift-Left », c'est de déplacer la sécurité le plus
-tôt possible, sur le poste du développeur. On a versionné le hook (pour qu'il soit auditable et
+**Comment on s'y prend.** L'idée du « Shift-Left », c'est de déplacer la sécurité le plus tôt
+possible, sur le poste du développeur. On a versionné le hook (pour qu'il soit auditable et
 réinstallable) et on l'a construit comme trois barrières successives : si l'une échoue, le commit
 s'arrête net. On a aussi écrit une règle Gitleaks sur-mesure pour les jetons internes de l'entreprise.
+
+**À ne pas oublier.**
+
+- Le message d'erreur rouge est imposé **au mot près** : « Sécurité : Tentative de commit d'un
+  fichier de configuration ou d'une clé en clair. Opération annulée. »
+- Gitleaks ne scanne **que les fichiers indexés** (`--staged`), pas tout le dépôt.
+- La règle `SECWALLET_` veut **exactement 24 caractères** majuscules, avec vérification d'**entropie**.
+- Le hook doit **réellement bloquer** (code de sortie non nul), pas juste afficher un avertissement.
 
 ```mermaid
 flowchart TB
@@ -104,8 +117,13 @@ sur le disque.
 **Comment on s'y prend.** On a trouvé l'idée de l'enveloppe élégante : on chiffre **seulement les
 valeurs**, pas les noms de champs. Résultat, un reviewer voit la structure du fichier évoluer dans les
 `git diff` sans jamais voir un secret. Au runtime, la clé privée reste dans une variable
-d'environnement et SOPS déchiffre directement en mémoire, ce qui évite le fichier temporaire sur le
-disque du runner.
+d'environnement et SOPS déchiffre directement en mémoire.
+
+**À ne pas oublier.**
+
+- La clé privée `age` doit s'appeler **`ops.txt`** (et rester hors du dépôt).
+- **Seules les valeurs** sont chiffrées : les clés YAML restent lisibles (via `encrypted_regex`).
+- **Aucun fichier de secret en clair** ne doit toucher le disque du runner (donc pas de `mktemp`).
 
 ```mermaid
 flowchart LR
@@ -132,6 +150,13 @@ dépendances, l'autre ne garde que le strict nécessaire et tourne sous un utili
 filtre de chemins évite de reconstruire l'image pour rien. Et on a placé le scan Trivy **avant** le
 push : tant qu'il reste une vulnérabilité haute ou critique, rien ne part sur le registre.
 
+**À ne pas oublier.**
+
+- Image **multi-stage** et exécution **non-root** (bonnes pratiques imposées).
+- Ne (re)builder **que si** les fichiers concernés changent (filtrage de chemins).
+- Le scan Trivy passe **avant** la publication ; le push n'a lieu que si le scan est clean **et** sur `main`.
+- L'image est taggée au **SHA du commit**, pas juste `latest`.
+
 ```mermaid
 flowchart LR
     change{backend modifié ?}:::warn -->|non| skip[On ne rebuild pas]:::info
@@ -152,10 +177,17 @@ met en cache les dépendances, analyse le code avec **CodeQL**, et surtout se co
 tests, Gitleaks et scan d'image doivent réussir, `continue-on-error` est interdit, et le déploiement
 dépend de tout ça.
 
-**Comment on s'y prend.** On a raisonné en « droits par défaut minimaux » : le workflow ne
-peut que lire, et on ouvre les droits d'écriture (comme `packages: write`) uniquement dans le job qui
-en a besoin. Ensuite, chaque contrôle est bloquant : le graphe de dépendances `needs` fait que si un
-seul maillon casse, les déploiements ne démarrent même pas.
+**Comment on s'y prend.** On a raisonné en « droits par défaut minimaux » : le workflow ne peut que
+lire, et on ouvre les droits d'écriture (comme `packages: write`) uniquement dans le job qui en a
+besoin. Ensuite, chaque contrôle est bloquant : le graphe de dépendances `needs` fait que si un seul
+maillon casse, les déploiements ne démarrent même pas.
+
+**À ne pas oublier.**
+
+- `permissions: contents: read` au niveau **global** ; toute écriture est **isolée** au job concerné.
+- **`continue-on-error: true` est interdit** partout.
+- CodeQL doit **faire échouer** le job sur une vulnérabilité `High`/`Error`, et **téléverser le SARIF**.
+- Les tests et Gitleaks sont **bloquants** ; la CD **dépend** de tous ces contrôles.
 
 ```mermaid
 flowchart LR
@@ -179,10 +211,16 @@ flowchart LR
 réutilisable, avec une entrée obligatoire (le chemin du SBOM), qui échoue uniquement sur des
 vulnérabilités `CRITICAL` et se contente d'un avertissement pour les `HIGH` et `MEDIUM`.
 
-**Comment on s'y prend.** On voulait une vraie « boîte noire » : l'action installe Trivy
-elle-même, donc elle fonctionne toute seule, sans que le workflow appelant ait à s'en occuper. On a
-choisi deux niveaux de sévérité pour ne pas bloquer inutilement sur des vulnérabilités moins graves,
-tout en gardant une trace visible dans le résumé du workflow.
+**Comment on s'y prend.** On voulait une vraie « boîte noire » : l'action installe Trivy elle-même,
+donc elle fonctionne toute seule, sans que le workflow appelant ait à s'en occuper. On a choisi deux
+niveaux de sévérité pour ne pas bloquer inutilement sur des vulnérabilités moins graves, tout en
+gardant une trace visible dans le résumé du workflow.
+
+**À ne pas oublier.**
+
+- Elle doit être de **type `composite`**, avec une **entrée obligatoire** (le chemin du SBOM CycloneDX).
+- Échec **uniquement** sur `CRITICAL` ; `HIGH` et `MEDIUM` ne font qu'un **avertissement** (résumé).
+- Pour être une vraie boîte noire, elle **installe Trivy elle-même**.
 
 ```mermaid
 flowchart LR
@@ -211,6 +249,12 @@ tous les contrôles. Le frontend est publié de façon hermétique (artefact ép
 build dans l'historique Git), et le backend reçoit ses variables directement dans la commande de
 déploiement. On en a profité pour publier cette documentation dans le même artefact, sous `/docs/`.
 
+**À ne pas oublier.**
+
+- Déploiement **uniquement sur `main`** et **seulement si toute la CI est verte**.
+- Frontend en **OIDC** : permissions `pages: write` **et** `id-token: write`, publication hermétique.
+- Backend Vercel : secrets **injectés à la volée**, rien n'est écrit en clair sur le runner.
+
 ```mermaid
 flowchart LR
     ci[CI 100% verte sur main]:::ok --> front[deploy-frontend]:::prod
@@ -237,6 +281,26 @@ ni risquer deux déploiements en parallèle. Et on termine la chaîne par un `cu
 c'est notre filet de sécurité, celui qui confirme que les secrets ont bien été injectés et que l'API
 répond vraiment.
 
-Chaque exigence de l'énoncé est reprise, avec le lien vers sa réalisation concrète, sur la page
-[Conformité](conformite.md). Le détail technique complet se trouve dans la section
+**À ne pas oublier.**
+
+- Deux commits coup sur coup : le pipeline du premier doit **s'annuler immédiatement**.
+- Le healthcheck interroge **`/api/health`** sur l'URL de prod générée dynamiquement.
+- Tout code de réponse **différent de `200`** doit **faire échouer** le job (alerte immédiate).
+
+```mermaid
+flowchart LR
+    push[Deux push rapprochés]:::warn --> cancel[Le 1er pipeline s'annule]:::info
+    cancel --> deploy[Déploiement du plus récent]:::prod
+    deploy --> health{/api/health = 200 ?}:::warn
+    health -->|oui| ok[Tout va bien]:::ok
+    health -->|non| alert[Job en échec, alerte équipe]:::danger
+    classDef warn fill:#f59f00,stroke:#e8590c,color:#fff;
+    classDef info fill:#1c7ed6,stroke:#1971c2,color:#fff;
+    classDef prod fill:#0b7285,stroke:#095c6b,color:#fff;
+    classDef ok fill:#12b886,stroke:#0ca678,color:#fff;
+    classDef danger fill:#e03131,stroke:#c92a2a,color:#fff;
+```
+
+Chaque exigence est reprise, **avec sa preuve** (extrait de code, configuration, déploiement en
+ligne), sur la page [Conformité](conformite.md). Le détail technique complet se trouve dans la section
 [Implémentation](architecture.md).

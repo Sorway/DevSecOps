@@ -1,3 +1,7 @@
+# SecureWallet, une chaîne de livraison sécurisée ! ♾️
+
+ici
+
 <div class="hero-logos">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/logo_ynov_campus_sophia_white.png">
@@ -6,15 +10,37 @@
   <img src="assets/devsecops.png" alt="DevSecOps">
 </div>
 
-# SecureWallet
 
 **SecureWallet est un projet de CI/CD sécurisée** : une chaîne de livraison auditable, hermétique et
-infalsifiable pour une SPA statique et une API Node.js manipulant des données sensibles. Projet final
-du module DevSecOps avancé, Sophia Ynov Campus.
+infalsifiable pour une SPA statique et une API Node.js manipulant des données sensibles. Ce projet conclut un bloc de formation d'environ **28h** sur le DevSecOps à Sophia Ynov Campus, en filière Cloud, Sécurité & Infrastructure.
 
 [:material-web: Frontend](https://sorway.github.io/DevSecOps/){ .md-button .md-button--primary }
 [:material-server: API](https://projet-final-inky-iota.vercel.app){ .md-button }
 [:material-github: Dépôt](https://github.com/Sorway/DevSecOps){ .md-button }
+
+![CI/CD sécurisée](assets/ci-cd.webp){ .logo }
+
+## L'Équipe sur ce lab 
+
+<div class="team">
+  <div class="member m-blue">
+    <a href="https://github.com/astronas"><img src="https://avatars.githubusercontent.com/u/184748371?v=4" alt="Thibaut Gianola"></a>
+    <strong>Thibaut Gianola</strong>
+    <a class="handle" href="https://github.com/astronas">@astronas</a>
+  </div>
+  <div class="member m-purple">
+    <a href="https://github.com/Sorway"><img src="https://avatars.githubusercontent.com/u/38928488?v=4" alt="Jonathan Panzer"></a>
+    <strong>Jonathan Panzer</strong>
+    <a class="handle" href="https://github.com/Sorway">@Sorway</a>
+  </div>
+  <div class="member m-green">
+    <a href="https://github.com/Tiwen2"><img src="https://avatars.githubusercontent.com/u/238646488?v=4" alt="Redouane Kachour"></a>
+    <strong>Redouane Kachour</strong>
+    <a class="handle" href="https://github.com/Tiwen2">@tiwen2</a>
+  </div>
+</div>
+
+## La stack technique
 
 ![Node.js](assets/nodejs.png){ .logo-strip }
 ![Docker](assets/docker.png){ .logo-strip }
@@ -79,22 +105,3 @@ flowchart LR
 2. **[Implémentation](architecture.md)** : le détail technique, section par section.
 3. **[Conformité](conformite.md)** : la couverture de l'énoncé, exigence par exigence.
 
-## L'Équipe sur ce lab { .team-title }
-
-<div class="team">
-  <div class="member m-blue">
-    <a href="https://github.com/astronas"><img src="https://avatars.githubusercontent.com/u/184748371?v=4" alt="Thibaut Gianola"></a>
-    <strong>Thibaut Gianola</strong>
-    <a class="handle" href="https://github.com/astronas">@astronas</a>
-  </div>
-  <div class="member m-purple">
-    <a href="https://github.com/Sorway"><img src="https://avatars.githubusercontent.com/u/38928488?v=4" alt="Jonathan Panzer"></a>
-    <strong>Jonathan Panzer</strong>
-    <a class="handle" href="https://github.com/Sorway">@Sorway</a>
-  </div>
-  <div class="member m-green">
-    <a href="https://github.com/Tiwen2"><img src="https://avatars.githubusercontent.com/u/238646488?v=4" alt="Redouane Kachour"></a>
-    <strong>Redouane Kachour</strong>
-    <a class="handle" href="https://github.com/Tiwen2">@tiwen2</a>
-  </div>
-</div>

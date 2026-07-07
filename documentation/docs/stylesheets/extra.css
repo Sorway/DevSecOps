@@ -46,10 +46,10 @@
 
 /* --- Bandeau de logos de l'accueil : petits, en ligne, centrés ------------ */
 .md-typeset img.logo-strip {
-  height: 44px !important;
+  height: 56px !important;
   width: auto !important;
   vertical-align: middle;
-  margin: 4px 8px;
+  margin: 6px 10px;
 }
 
 /* --- Zone de contenu élargie (utile sur les pages sans menu latéral) ------ */

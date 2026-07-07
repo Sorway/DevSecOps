@@ -3,6 +3,8 @@
 La philosophie GitOps exige qu'**aucun secret de production ne soit stocké en clair**, tout en
 laissant l'équipe Ops **auditer les structures de fichiers**.
 
+![SOPS](assets/sops.png){ height="54" }
+
 ## Génération des clés
 
 Une paire de clés asymétriques est générée avec **age**. La clé privée est nommée `ops.txt`

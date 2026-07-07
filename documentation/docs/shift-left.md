@@ -3,6 +3,8 @@
 Avant qu'une seule ligne n'atteigne GitHub, le hook **`scripts/pre-commit.sh`** garantit l'intégrité
 des commits sur le poste de travail. Il agit comme une **barrière locale**.
 
+![GitHub Actions](assets/github_actions.png){ height="52" }
+
 ## Installation
 
 Le hook est **versionné** (donc auditable et réinstallable). Sur un nouveau clone :
@@ -41,6 +43,8 @@ Le hook **bloque le commit** (`exit ≠ 0`) si l'un des trois échoue :
     commit (il n'affiche pas « OK » à tort). Les trois contrôles sont donc de vraies barrières.
 
 ## Règle Gitleaks sur-mesure
+
+![Gitleaks](assets/Gitleaks.png){ height="46" }
 
 Fichier [`gitleaks.toml`](https://github.com/Sorway/DevSecOps/blob/main/gitleaks.toml) : interception
 des jetons internes de l'entreprise, préfixe `SECWALLET_` suivi d'**exactement 24 caractères

@@ -4,6 +4,8 @@ Le déploiement ne se déclenche **que si toute la CI est verte** et **uniquemen
 
 ## Frontend → GitHub Pages
 
+![GitHub Pages](assets/github_pages.png){ height="52" }
+
 Publication hermétique via **OIDC**, sans laisser de trace de build dans l'historique Git.
 
 ```yaml
@@ -29,6 +31,9 @@ deploy-frontend:
 · :material-book-open-variant: cette documentation est publiée en sous-chemin `/docs/`.
 
 ## Backend → Vercel
+
+![Node.js](assets/nodejs.png){ height="52" }
+![Vercel](assets/vercel.png){ height="36" }
 
 Déploiement piloté **en ligne de commande** dans GitHub Actions, secrets déchiffrés **en RAM**.
 

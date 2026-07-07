@@ -15,6 +15,16 @@ n'atteint la production sans validation technique*.
 [:material-server: API (Vercel)](https://projet-final-inky-iota.vercel.app){ .md-button }
 [:material-github: Dépôt](https://github.com/Sorway/DevSecOps){ .md-button }
 
+![Node.js](assets/nodejs.png){ height="44" }
+![Docker](assets/docker.png){ height="44" }
+![Trivy](assets/trivy.png){ height="44" }
+![CodeQL](assets/codeql.png){ height="44" }
+![Gitleaks](assets/Gitleaks.png){ height="38" }
+![SOPS](assets/sops.png){ height="44" }
+![GitHub Actions](assets/github_actions.png){ height="44" }
+![GitHub Pages](assets/github_pages.png){ height="44" }
+![Vercel](assets/vercel.png){ height="32" }
+
 ## Les deux composants
 
 | Composant | Description | Livraison |

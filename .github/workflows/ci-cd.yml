@@ -165,18 +165,25 @@ jobs:
     concurrency:
       group: github-pages-deploy
       cancel-in-progress: false
-    environment: production
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     permissions:
       contents: read
       pages: write
       id-token: write
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/configure-pages@v6
-      - uses: actions/upload-pages-artifact@v5
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v6
+      - name: Upload frontend artifact
+        uses: actions/upload-pages-artifact@v5
         with:
           path: frontend
-      - uses: actions/deploy-pages@v5
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
 
   deploy-backend:
     name: deploy-backend
@@ -209,14 +216,15 @@ jobs:
               exit 1
             fi
           done
-          age_key_file="$(mktemp)"
-          printf '%s\n' "$SOPS_AGE_KEY" | tr -d '\r' > "$age_key_file"
-          if ! grep -q '^AGE-SECRET-KEY-' "$age_key_file"; then
+          # La cle privee age reste UNIQUEMENT en memoire (variable d'environnement).
+          # SOPS lit nativement $SOPS_AGE_KEY : aucun fichier de secret en clair n'est
+          # ecrit sur le disque du runner (pas de mktemp, pas de SOPS_AGE_KEY_FILE).
+          SOPS_AGE_KEY="$(printf '%s' "$SOPS_AGE_KEY" | tr -d '\r')"
+          if ! printf '%s\n' "$SOPS_AGE_KEY" | grep -q '^AGE-SECRET-KEY-'; then
             echo "SOPS_AGE_KEY doit contenir la cle privee age, pas la cle publique age1..." >&2
             exit 1
           fi
-          export SOPS_AGE_KEY_FILE="$age_key_file"
-          unset SOPS_AGE_KEY
+          export SOPS_AGE_KEY
           secrets_json="$(sops -d --output-type json .github/secrets-prod.yaml)"
           mapfile -t env_args < <(node -e 'const s=JSON.parse(process.argv[1]).production; for (const [k,v] of Object.entries(s)) console.log("--env=" + k + "=" + String(v))' "$secrets_json")
           vercel pull --yes --environment=production --token "$VERCEL_TOKEN"

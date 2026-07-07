@@ -4,9 +4,27 @@ inputs:
   sbom-path:
     description: Path to the CycloneDX JSON SBOM.
     required: true
+  trivy-version:
+    description: Trivy version to install when the binary is not already on the runner.
+    required: false
+    default: "0.72.0"
 runs:
   using: composite
   steps:
+    - name: Ensure Trivy is installed
+      shell: bash
+      run: |
+        set -euo pipefail
+        if command -v trivy >/dev/null 2>&1; then
+          echo "Trivy deja present: $(trivy --version | head -n 1)"
+          exit 0
+        fi
+        version="${{ inputs.trivy-version }}"
+        curl -sfL -o trivy.tar.gz "https://github.com/aquasecurity/trivy/releases/download/v${version}/trivy_${version}_Linux-64bit.tar.gz"
+        tar -xzf trivy.tar.gz trivy
+        sudo install trivy /usr/local/bin/trivy
+        rm -f trivy.tar.gz trivy
+        trivy --version
     - name: Scan CRITICAL vulnerabilities
       shell: bash
       run: |

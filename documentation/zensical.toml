@@ -6,13 +6,13 @@
 
 [project]
 site_name = "SecureWallet · Documentation DevSecOps"
-site_description = "Industrialisation, durcissement et architecture CI/CD d'une SPA statique et d'une API Node.js manipulant des donnees sensibles. Projet final DevSecOps, Sophia Ynov Campus."
-site_author = "Equipe SecureWallet · Sophia Ynov Campus"
+site_description = "Industrialisation, durcissement et architecture CI/CD d'une SPA statique et d'une API Node.js manipulant des données sensibles. Projet final DevSecOps, Sophia Ynov Campus."
+site_author = "Équipe SecureWallet · Sophia Ynov Campus"
 site_url = "https://sorway.github.io/DevSecOps/docs/"
 repo_url = "https://github.com/Sorway/DevSecOps"
 repo_name = "Sorway/DevSecOps"
 edit_uri = "edit/main/documentation/docs/"
-copyright = "Copyright &copy; 2026 Equipe SecureWallet · Sophia Ynov Campus"
+copyright = "Copyright &copy; 2026 Équipe SecureWallet · Sophia Ynov Campus"
 
 docs_dir = "docs"
 site_dir = "site"
@@ -22,8 +22,8 @@ extra_css = ["stylesheets/extra.css"]
 nav = [
   { "Accueil" = "index.md" },
   { "Contexte & consignes" = "contexte.md" },
-  { "Implementation" = [
-    { "Architecture du depot" = "architecture.md" },
+  { "Implémentation" = [
+    { "Architecture du dépôt" = "architecture.md" },
     { "Gouvernance Git" = "gouvernance.md" },
     { "Durcissement local" = "shift-left.md" },
     { "Secrets (SOPS / age)" = "secrets.md" },
@@ -31,10 +31,10 @@ nav = [
     { "Conteneurisation & GHCR" = "conteneurisation.md" },
     { "Pipeline CI durci" = "ci.md" },
     { "Composite Action Trivy" = "composite-action.md" },
-    { "Deploiement continu" = "deploiement.md" },
+    { "Déploiement continu" = "deploiement.md" },
     { "Robustesse & rollback" = "robustesse.md" },
   ] },
-  { "Conformite" = "conformite.md" },
+  { "Conformité" = "conformite.md" },
 ]
 
 [project.theme]
@@ -82,7 +82,7 @@ toggle.name = "Basculer en mode clair"
 [[project.extra.social]]
 icon = "fontawesome/brands/github"
 link = "https://github.com/Sorway/DevSecOps"
-name = "Depot GitHub du projet"
+name = "Dépôt GitHub du projet"
 
 [[project.extra.social]]
 icon = "fontawesome/solid/graduation-cap"

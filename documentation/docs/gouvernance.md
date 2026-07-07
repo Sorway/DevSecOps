@@ -1,5 +1,7 @@
 # Gouvernance Git
 
+![GitHub](assets/github.png){ .logo }
+
 La politique de sécurité est **lisible directement dans le YAML** : à la simple lecture du workflow,
 un auditeur constate qu'un déploiement sur `main` exige le succès absolu des jobs amont.
 

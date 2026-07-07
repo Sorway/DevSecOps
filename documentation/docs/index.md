@@ -7,15 +7,15 @@ Node.js manipulant des données sensibles. Projet final du module DevSecOps avan
 [:material-server: API](https://projet-final-inky-iota.vercel.app){ .md-button }
 [:material-github: Dépôt](https://github.com/Sorway/DevSecOps){ .md-button }
 
-![Node.js](assets/nodejs.png){ height="30" }
-![Docker](assets/docker.png){ height="30" }
-![Trivy](assets/trivy.png){ height="30" }
-![CodeQL](assets/codeql.png){ height="30" }
-![Gitleaks](assets/Gitleaks.png){ height="30" }
-![SOPS](assets/sops.png){ height="30" }
-![GitHub Actions](assets/github_actions.png){ height="30" }
-![GitHub Pages](assets/github_pages.png){ height="30" }
-![Vercel](assets/vercel.png){ height="30" }
+![Node.js](assets/nodejs.png){ height="24" }
+![Docker](assets/docker.png){ height="24" }
+![Trivy](assets/trivy.png){ height="24" }
+![CodeQL](assets/codeql.png){ height="24" }
+![Gitleaks](assets/Gitleaks.png){ height="24" }
+![SOPS](assets/sops.png){ height="24" }
+![GitHub Actions](assets/github_actions.png){ height="24" }
+![GitHub Pages](assets/github_pages.png){ height="24" }
+![Vercel](assets/vercel.png){ height="24" }
 
 ## En bref
 

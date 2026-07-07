@@ -2,7 +2,7 @@
 
 L'artefact serveur du backend est construit et publié en image Docker **sécurisée**.
 
-![Docker](assets/docker.png){ height="32" }
+![Docker](assets/docker.png){ height="24" }
 
 ## Dockerfile multi-stage non-root
 

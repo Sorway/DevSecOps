@@ -4,7 +4,7 @@ Le déploiement ne se déclenche **que si toute la CI est verte** et **uniquemen
 
 ## Frontend → GitHub Pages
 
-![GitHub Pages](assets/github_pages.png){ height="32" }
+![GitHub Pages](assets/github_pages.png){ height="24" }
 
 Publication hermétique via **OIDC**, sans laisser de trace de build dans l'historique Git.
 
@@ -32,8 +32,8 @@ deploy-frontend:
 
 ## Backend → Vercel
 
-![Node.js](assets/nodejs.png){ height="32" }
-![Vercel](assets/vercel.png){ height="32" }
+![Node.js](assets/nodejs.png){ height="24" }
+![Vercel](assets/vercel.png){ height="24" }
 
 Déploiement piloté **en ligne de commande** dans GitHub Actions, secrets déchiffrés **en RAM**.
 

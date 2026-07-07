@@ -11,7 +11,7 @@ et expose des entrées / sorties strictes.
 
 ## L'action `trivy-scan`
 
-![Trivy](assets/trivy.png){ height="32" }
+![Trivy](assets/trivy.png){ height="24" }
 
 Fichier [`.github/actions/trivy-scan/action.yml`](https://github.com/Sorway/DevSecOps/blob/main/.github/actions/trivy-scan/action.yml).
 

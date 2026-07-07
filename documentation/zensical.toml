@@ -17,22 +17,24 @@ copyright = "Copyright &copy; 2026 Equipe SecureWallet · Sophia Ynov Campus"
 docs_dir = "docs"
 site_dir = "site"
 
+extra_css = ["stylesheets/extra.css"]
+
 nav = [
   { "Accueil" = "index.md" },
   { "Contexte & consignes" = "contexte.md" },
-  { "Architecture du depot" = "architecture.md" },
-  { "Gouvernance Git" = "gouvernance.md" },
-  { "Securite" = [
-    { "Durcissement local (Shift-Left)" = "shift-left.md" },
+  { "Implementation" = [
+    { "Architecture du depot" = "architecture.md" },
+    { "Gouvernance Git" = "gouvernance.md" },
+    { "Durcissement local" = "shift-left.md" },
     { "Secrets (SOPS / age)" = "secrets.md" },
     { "SAST & scan d'images" = "sast.md" },
+    { "Conteneurisation & GHCR" = "conteneurisation.md" },
+    { "Pipeline CI durci" = "ci.md" },
+    { "Composite Action Trivy" = "composite-action.md" },
+    { "Deploiement continu" = "deploiement.md" },
+    { "Robustesse & rollback" = "robustesse.md" },
   ] },
-  { "Conteneurisation & GHCR" = "conteneurisation.md" },
-  { "Pipeline CI durci" = "ci.md" },
-  { "Composite Action Trivy" = "composite-action.md" },
-  { "Deploiement continu" = "deploiement.md" },
-  { "Robustesse & rollback" = "robustesse.md" },
-  { "Conformite aux consignes" = "conformite.md" },
+  { "Conformite" = "conformite.md" },
 ]
 
 [project.theme]

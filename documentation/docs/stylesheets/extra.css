@@ -1,0 +1,68 @@
+/* =========================================================================
+   SecureWallet · styles de la documentation
+   Diagrammes Mermaid colorés et animés (flux "marching ants").
+   ========================================================================= */
+
+/* --- Flux animé sur les liens des flowcharts ------------------------------ */
+.mermaid .edgePaths path,
+.mermaid path.flowchart-link,
+.mermaid .edgePath .path {
+  stroke-dasharray: 8 5 !important;
+  animation: sw-flow 850ms linear infinite;
+}
+
+@keyframes sw-flow {
+  to { stroke-dashoffset: -26; }
+}
+
+/* Pointes de flèche plus lisibles */
+.mermaid marker path,
+.mermaid defs marker path {
+  fill: var(--md-accent-fg-color, #22b8cf) !important;
+}
+
+/* Les liens des state/sequence diagrams pulsent doucement */
+.mermaid .transition,
+.mermaid .messageLine0,
+.mermaid .messageLine1 {
+  stroke-dasharray: 6 4 !important;
+  animation: sw-flow 1100ms linear infinite;
+}
+
+/* --- Nœuds : coins arrondis et ombre douce -------------------------------- */
+.mermaid .node rect,
+.mermaid .node polygon,
+.mermaid .node circle {
+  rx: 6px;
+  ry: 6px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.18));
+}
+
+/* Sous-graphes plus discrets */
+.mermaid .cluster rect {
+  rx: 10px;
+  ry: 10px;
+  fill-opacity: 0.06 !important;
+}
+
+/* Apparition en fondu du diagramme une fois rendu */
+.mermaid > svg {
+  animation: sw-fade 500ms ease both;
+}
+@keyframes sw-fade {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Accessibilité : couper les animations si l'utilisateur le demande ---- */
+@media (prefers-reduced-motion: reduce) {
+  .mermaid .edgePaths path,
+  .mermaid path.flowchart-link,
+  .mermaid .edgePath .path,
+  .mermaid .transition,
+  .mermaid .messageLine0,
+  .mermaid .messageLine1,
+  .mermaid > svg {
+    animation: none !important;
+  }
+}

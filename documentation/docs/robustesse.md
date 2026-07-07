@@ -13,9 +13,8 @@ concurrency:
   cancel-in-progress: true
 ```
 
-!!! note "Sérialisation du déploiement Pages"
-    Le job `deploy-frontend` a en plus sa propre concurrence (`cancel-in-progress: false`) pour
-    **ne pas interrompre** un déploiement Pages en cours, tout en n'en lançant qu'un à la fois.
+Le job `deploy-frontend` a en plus sa propre concurrence (`cancel-in-progress: false`) pour
+**ne pas interrompre** un déploiement Pages en cours, tout en n'en lançant qu'un seul à la fois.
 
 ## Healthcheck post-déploiement
 

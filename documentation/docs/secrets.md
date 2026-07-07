@@ -29,11 +29,11 @@ sops:
     encrypted_regex: ^(DATABASE_URL|JWT_SECRET|API_KEY)$   # ← seules ces valeurs
 ```
 
-!!! tip "Pourquoi `encrypted_regex`"
-    Il cible les valeurs à chiffrer par leur clé. Les noms de champs (`DATABASE_URL`…) restent en
-    clair, donc un reviewer voit *la structure* du fichier évoluer sans jamais voir les secrets.
+Le motif `encrypted_regex` cible les valeurs à chiffrer par leur clé. Les noms de champs
+(`DATABASE_URL`, `JWT_SECRET`, `API_KEY`) restent en clair : un reviewer voit *la structure* du
+fichier évoluer dans les `git diff` sans jamais voir les secrets.
 
-## Déchiffrement au runtime — 100 % en RAM
+## Déchiffrement au runtime : 100 % en RAM
 
 En CD, le secret GitHub `SOPS_AGE_KEY` (la clé privée age) est fourni **en variable d'environnement**.
 SOPS le lit **nativement en mémoire** ; le fichier est déchiffré en RAM et les valeurs sont injectées

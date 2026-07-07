@@ -1,4 +1,4 @@
-# Composite Action — Trivy SBOM
+# Composite Action : Trivy SBOM
 
 Pour centraliser la gouvernance de sécurité et éviter la redondance, le scan de dépendances au format
 SBOM est isolé dans une **action composite** locale, réutilisable en boîte noire.

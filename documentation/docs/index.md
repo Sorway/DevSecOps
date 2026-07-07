@@ -1,74 +1,50 @@
 # SecureWallet
 
-**Chaîne de livraison auditable, hermétique et infalsifiable** pour une SPA statique et une API
-Node.js manipulant des données sensibles, industrialisées en un pipeline durci où *aucun code
-n'atteint la production sans validation technique*.
+Chaîne de livraison **auditable, hermétique et infalsifiable** pour une SPA statique et une API
+Node.js manipulant des données sensibles. Projet final du module DevSecOps avancé, Sophia Ynov Campus.
 
-!!! note "Projet final — DevSecOps avancé (Sophia Ynov Campus)"
-    Une équipe de développement nous confie le dépôt d'une application : une SPA statique
-    (`frontend/`) et une API Node.js / Express (`backend/`) manipulant des données hautement
-    sensibles (clés d'API, accès à des infrastructures externes). **Notre mission :
-    industrialiser, durcir et sécuriser toute la chaîne CI/CD** — gouvernance Git, secrets
-    chiffrés de bout en bout, conteneurisation, analyse statique, déploiement continu.
-
-[:material-web: Frontend (GitHub Pages)](https://sorway.github.io/DevSecOps/){ .md-button .md-button--primary }
-[:material-server: API (Vercel)](https://projet-final-inky-iota.vercel.app){ .md-button }
+[:material-web: Frontend](https://sorway.github.io/DevSecOps/){ .md-button .md-button--primary }
+[:material-server: API](https://projet-final-inky-iota.vercel.app){ .md-button }
 [:material-github: Dépôt](https://github.com/Sorway/DevSecOps){ .md-button }
 
-![Node.js](assets/nodejs.png){ height="32" }
-![Docker](assets/docker.png){ height="32" }
-![Trivy](assets/trivy.png){ height="32" }
-![CodeQL](assets/codeql.png){ height="32" }
-![Gitleaks](assets/Gitleaks.png){ height="32" }
-![SOPS](assets/sops.png){ height="32" }
-![GitHub Actions](assets/github_actions.png){ height="32" }
-![GitHub Pages](assets/github_pages.png){ height="32" }
-![Vercel](assets/vercel.png){ height="32" }
+![Node.js](assets/nodejs.png){ height="30" }
+![Docker](assets/docker.png){ height="30" }
+![Trivy](assets/trivy.png){ height="30" }
+![CodeQL](assets/codeql.png){ height="30" }
+![Gitleaks](assets/Gitleaks.png){ height="30" }
+![SOPS](assets/sops.png){ height="30" }
+![GitHub Actions](assets/github_actions.png){ height="30" }
+![GitHub Pages](assets/github_pages.png){ height="30" }
+![Vercel](assets/vercel.png){ height="30" }
 
-## Les deux composants
+## En bref
 
-| Composant | Description | Livraison |
-|-----------|-------------|-----------|
-| `frontend/` | Single Page Application 100 % statique (HTML / CSS / JS moderne) consommant l'API | **GitHub Pages** via OIDC |
-| `backend/` | API REST Node.js / Express manipulant des données sensibles | **Docker → GHCR** + **Vercel** |
-
-## Le pipeline en un coup d'œil
-
-À la simple lecture de [`ci-cd.yml`](https://github.com/Sorway/DevSecOps/blob/main/.github/workflows/ci-cd.yml),
-un auditeur constate qu'un déploiement sur `main` **exige le succès absolu** des jobs de validation amont.
+Deux composants, une seule chaîne CI/CD durcie. Le code des développeurs passe par une branche
+d'intégration, la production n'accepte que du code techniquement validé, et chaque secret reste
+chiffré de bout en bout.
 
 ```mermaid
 flowchart LR
-    subgraph CI["Intégration continue (staging + main)"]
-        direction LR
-        A[validate-workflows] --> B[test]
-        A --> G[gitleaks]
-        B --> C[codeql]
-        B --> S[sbom-scan]
-        B --> D
-        G --> D
-        C --> D
-        S --> D
-        D[docker-image]
-    end
-    subgraph CD["Déploiement (main uniquement)"]
-        direction LR
-        D --> F[deploy-frontend]
-        D --> K[deploy-backend]
-    end
-    classDef prod fill:#0b7285,stroke:#0b7285,color:#fff;
-    class F,K prod;
+    dev([Développeur]):::actor --> hook[Hook pre-commit]:::warn
+    hook --> stg[(staging)]:::info
+    stg --> pr[PR + revue]:::warn
+    pr --> main[(main)]:::prod
+    main --> ci[CI durcie]:::info
+    ci --> deploy[Déploiement]:::ok
+    classDef actor fill:#495057,stroke:#343a40,color:#fff;
+    classDef info fill:#1c7ed6,stroke:#1971c2,color:#fff;
+    classDef warn fill:#f59f00,stroke:#e8590c,color:#fff;
+    classDef ok fill:#12b886,stroke:#0ca678,color:#fff;
+    classDef prod fill:#0b7285,stroke:#095c6b,color:#fff;
 ```
 
-## Points clés
+| Composant | Rôle | Livraison |
+|-----------|------|-----------|
+| `frontend/` | SPA statique (HTML / CSS / JS moderne) qui consomme l'API | GitHub Pages (OIDC) |
+| `backend/` | API REST Node.js / Express, données sensibles | Docker → GHCR + Vercel |
 
-- :material-source-branch: **Gouvernance** : `staging` pivot d'intégration, `main` protégée (revue + status checks, push direct interdit).
-- :material-shield-check: **Shift-Left** : hook `pre-commit` (actionlint + gitleaks + refus des `.env`/`.pem`/`.key`).
-- :material-lock: **Secrets** : chiffrement par enveloppe SOPS + age, déchiffrés en RAM, jamais sur disque.
-- :material-docker: **Conteneur** : Dockerfile multi-stage non-root, scan Trivy, publication conditionnelle sur GHCR taggée au SHA.
-- :material-magnify-scan: **CI hermétique** : moindre privilège, cache npm, CodeQL (SARIF), barrière stricte sans `continue-on-error`.
-- :material-rocket-launch: **CD** : GitHub Pages (OIDC) + Vercel (secrets injectés à la volée), healthcheck post-déploiement.
+## Comment lire cette documentation
 
-!!! tip "Par où commencer"
-    Lisez d'abord le [Contexte & consignes](contexte.md), puis suivez la navigation dans l'ordre.
-    La page [Conformité aux consignes](conformite.md) récapitule, point par point, la couverture de l'énoncé.
+1. **[Contexte & consignes](contexte.md)** : ce qu'on nous demande, et comment on s'y prend.
+2. **[Implémentation](architecture.md)** : le détail technique, section par section.
+3. **[Conformité](conformite.md)** : la couverture de l'énoncé, exigence par exigence.

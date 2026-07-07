@@ -3,7 +3,7 @@
 La philosophie GitOps exige qu'**aucun secret de production ne soit stocké en clair**, tout en
 laissant l'équipe Ops **auditer les structures de fichiers**.
 
-![SOPS](assets/sops.png){ height="24" }
+![SOPS](assets/sops.png){ .logo }
 
 ## Génération des clés
 

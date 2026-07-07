@@ -11,6 +11,6 @@ describe('Test End-to-End (E2E) - Parcours Utilisateur', () => {
     // 2. L'utilisateur effectue une action qui appelle l'API de bienvenue
     const apiRes = await request(app).get('/api/welcome?name=Professeur');
     expect(apiRes.statusCode).toEqual(200);
-    expect(apiRes.text).toContain('<h1>Bienvenue Professeur</h1>');
+    expect(apiRes.body).toEqual({ message: 'Bienvenue Professeur' });
   });
 });

@@ -70,12 +70,18 @@
   margin: 0 3px;
 }
 
-/* --- Accueil : pleine largeur, sans sommaire "Sur cette page" -------------- */
+/* --- Accueil : contenu aligné sous "Accueil", sans colonnes latérales ------ */
 /* Ciblé uniquement sur la page qui contient le marqueur .page-home.          */
+/* On masque la nav gauche (vide) ET le sommaire droit ; le contenu occupe    */
+/* alors toute la grille (même largeur que la barre d'onglets), donc aligné.  */
 .page-home { display: none; }
-body:has(.page-home) .md-sidebar--secondary { display: none !important; }
-body:has(.page-home) .md-main__inner { max-width: none !important; }
-body:has(.page-home) .md-content { max-width: none !important; }
+body:has(.page-home) .md-sidebar--primary,
+body:has(.page-home) .md-sidebar--secondary {
+  display: none !important;
+}
+body:has(.page-home) .md-content {
+  max-width: none !important;
+}
 
 /* --- Bandeau de logos de l'accueil : petits, en ligne, centrés ------------ */
 .md-typeset img.logo-strip {

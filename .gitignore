@@ -11,3 +11,7 @@ sbom*.json
 
 .vercel
 .env*
+
+# Sortie de build Zensical (documentation) et artefact Pages assemblé
+documentation/site/
+_public/

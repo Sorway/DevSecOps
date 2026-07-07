@@ -1,97 +1,136 @@
 <div align="center">
 
-# 🛡️ SecureWallet — Industrialisation, durcissement & architecture CI/CD
+<p>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/logo_ynov_campus_sophia_white.png">
+    <img src="docs/assets/logo_ynov_campus_sophia.png" alt="Sophia Ynov Campus" height="82">
+  </picture>
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="docs/assets/devsecops.png" alt="DevSecOps" height="66">
+</p>
 
-**Transformer une SPA statique et une API Node.js manipulant des données sensibles
-en une chaîne de livraison auditable, hermétique et infalsifiable.**
+# 🛡️ SecureWallet
 
-[![CI CD durcie](https://img.shields.io/badge/CI%2FCD-durcie-26c6da)](.github/workflows/ci-cd.yml)
-[![Node](https://img.shields.io/badge/Node.js-20-3c873a)](backend/package.json)
-[![Security](https://img.shields.io/badge/SAST-CodeQL-7c4dff)](.github/workflows/ci-cd.yml)
-[![Secrets](https://img.shields.io/badge/Secrets-SOPS%20%2B%20age-26e0a8)](.github/secrets-prod.yaml)
-[![Registry](https://img.shields.io/badge/Images-GHCR-24292e)](.github/workflows/ci-cd.yml)
-[![Made with](https://img.shields.io/badge/theme-Zensical-26c6da)](https://astronas.github.io/ynov-virtu/)
+### Industrialisation, durcissement et architecture CI/CD
 
-📄 **Vitrine du projet** : consultable localement dans le dossier [`docs/`](docs/index.html)
-🎓 *Dernier cours de DevSecOps avancé — Sophia Ynov Campus*
+**Chaîne de livraison auditable, hermétique et infalsifiable.**
+Une SPA statique et une API Node.js manipulant des données sensibles, industrialisées
+en un pipeline durci où *aucun code n'atteint la production sans validation technique*.
+
+[![CI CD durcie](https://github.com/Sorway/DevSecOps/actions/workflows/ci-cd.yml/badge.svg?branch=main)](https://github.com/Sorway/DevSecOps/actions/workflows/ci-cd.yml)
+[![CodeQL](https://img.shields.io/badge/SAST-CodeQL-7c4dff?logo=github)](.github/workflows/ci-cd.yml)
+[![Secrets](https://img.shields.io/badge/Secrets-SOPS%20%2B%20age-26e0a8?logo=vault)](.github/secrets-prod.yaml)
+[![Container](https://img.shields.io/badge/Registry-GHCR-24292e?logo=docker&logoColor=white)](https://github.com/Sorway/DevSecOps/pkgs/container/devsecops%2Fbackend)
+[![Node](https://img.shields.io/badge/Node.js-24-339933?logo=node.js&logoColor=white)](backend/Dockerfile)
+
+🌐 **[Frontend (GitHub Pages)](https://sorway.github.io/DevSecOps/)**  ·  ⚙️ **[API (Vercel)](https://projet-final-inky-iota.vercel.app)**  ·  ❤️ **[Healthcheck `/api/health`](https://projet-final-inky-iota.vercel.app/api/health)**
 
 </div>
 
 ---
 
-## 📌 Contexte
+> [!NOTE]
+> **Projet final du module DevSecOps avancé, Sophia Ynov Campus (TD).**
+> Une équipe de développement nous confie le dépôt d'une application : une SPA statique ([`frontend/`](frontend/))
+> et une API Node.js / Express ([`backend/`](backend/)) manipulant des données hautement sensibles (clés d'API,
+> accès à des infrastructures externes). Notre mission : **industrialiser, durcir et sécuriser toute la chaîne
+> CI/CD** (gouvernance Git, secrets chiffrés, conteneurisation, analyse statique, déploiement continu) afin
+> qu'*aucun code n'atteigne la production sans validation technique auditée*.
 
-L'équipe de développement confie le dépôt d'une application scindée en deux composants distincts
-au sein d'un même dépôt. Notre mission : **structurer la gouvernance Git pour interdire toute action
-non auditée** et bâtir un flux où le code de production est *techniquement* validé avant son déploiement.
+## 🧭 Aperçu
+
+Le dépôt réunit deux composants distincts, industrialisés dans une **unique chaîne CI/CD durcie**.
+La gouvernance Git interdit toute action non auditée : le code transite par une branche d'intégration,
+la production n'accepte que du code *techniquement validé*, et chaque secret reste chiffré de bout en bout.
 
 | Composant | Description | Livraison |
 |-----------|-------------|-----------|
-| [`frontend/`](frontend/) | Single Page Application entièrement statique (HTML/CSS/JS moderne) consommant l'API | GitHub Pages (OIDC) |
-| [`backend/`](backend/) | API REST Node.js / Express manipulant des données sensibles (clés d'API, infra externes) | Docker → GHCR + Vercel |
+| [`frontend/`](frontend/) | Single Page Application 100 % statique (HTML / CSS / JS moderne) consommant l'API | **GitHub Pages** via OIDC |
+| [`backend/`](backend/) | API REST Node.js / Express manipulant des données sensibles (clés d'API, infra externes) | **Docker → GHCR** + **Vercel** |
 
-> Le frontend est aussi copié dans [`backend/public/`](backend/public/) afin que le backend reste autonome
-> lors des builds Docker et des déploiements Vercel.
-
----
-
-## 🗂️ Sommaire
-
-1. [Architecture du dépôt](#-1-architecture-du-dépôt)
-2. [Gouvernance Git & branches](#-2-gouvernance-git--branches)
-3. [Durcissement local — Shift-Left](#-3-durcissement-local--shift-left)
-4. [Gestion des secrets par enveloppe (SOPS/age)](#-4-gestion-des-secrets-par-enveloppe-sopsage)
-5. [Conteneurisation multi-stage & GHCR](#-5-conteneurisation-multi-stage--ghcr)
-6. [Pipeline CI durci & interruption absolue](#-6-pipeline-ci-durci--interruption-absolue)
-7. [Composite Action — Trivy SBOM](#-7-composite-action--trivy-sbom)
-8. [Déploiement continu](#-8-déploiement-continu)
-9. [Robustesse, concurrence & rollback](#-9-robustesse-concurrence--rollback)
-10. [Démarrage local](#-10-démarrage-local)
-11. [Configuration GitHub requise](#-11-configuration-github-requise)
-12. [Livrables](#-12-livrables)
+> Le frontend est aussi copié dans [`backend/public/`](backend/public/) pour que le backend reste
+> autonome lors des builds Docker et des déploiements Vercel.
 
 ---
 
-## 📁 1. Architecture du dépôt
+## ⭐ Points clés
 
-```text
-.
-├── frontend/                       # SPA statique → GitHub Pages
-├── backend/
-│   ├── src/app.js                  # API Express (routes /api/*)
-│   ├── public/                     # copie du frontend (autonomie build/déploiement)
-│   ├── tests/                      # unit · integration · e2e (Jest + supertest)
-│   ├── Dockerfile                  # build multi-stage non-root
-│   └── .dockerignore
-├── .github/
-│   ├── workflows/
-│   │   └── ci-cd.yml               # pipeline principal durci (staging + main)
-│   ├── actions/trivy-scan/         # composite action — scan SBOM CycloneDX
-│   ├── branch-protection/main.yml  # politique de protection documentée
-│   └── secrets-prod.yaml           # secrets chiffrés SOPS (valeurs ENC[...])
-├── docs/index.html                 # vitrine/documentation locale du projet
-├── scripts/install-hooks.sh        # installation du hook pre-commit local
-├── scripts/install-hooks.ps1       # installation du hook pre-commit local sous PowerShell
-├── scripts/pre-commit.sh           # source versionnée du hook Shift-Left
-├── gitleaks.toml                   # règle SECWALLET_ sur-mesure
-├── scripts/frontend-smoke-test.js  # test de fumée du frontend
-└── README.md
+| Domaine | Mise en œuvre |
+|--------|----------------|
+| 🔀 **Gouvernance** | `staging` pivot d'intégration · `main` protégée (revue + status checks requis, push direct interdit) |
+| 🧱 **Shift-Left** | Hook `pre-commit` : `actionlint` + `gitleaks` (staged) + refus des fichiers `.env`/`.pem`/`.key` |
+| 🔐 **Secrets** | Chiffrement par enveloppe **SOPS + age**, déchiffrés **en RAM** au runtime, jamais sur disque |
+| 🐳 **Conteneur** | Dockerfile multi-stage, non-root, scan **Trivy**, publication conditionnelle sur **GHCR** taggée au SHA |
+| 🧪 **CI hermétique** | Moindre privilège (`contents: read`), cache npm, **CodeQL** (SARIF), barrière stricte sans `continue-on-error` |
+| 🧩 **Composite Action** | `trivy-scan` réutilisable : échec sur `CRITICAL`, avertissement sur `HIGH`/`MEDIUM` |
+| 🚀 **CD** | Frontend Pages (OIDC, hermétique) · Backend Vercel (CLI, secrets injectés à la volée) |
+| 🛟 **Robustesse** | Concurrence annulante · **Healthcheck** post-déploiement sur `/api/health` |
+
+---
+
+## 🧰 Stack technique
+
+<div align="center">
+
+![Node.js](https://img.shields.io/badge/Node.js-24-339933?logo=node.js&logoColor=white)
+![Express](https://img.shields.io/badge/Express-4-000000?logo=express&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-multi--stage-2496ed?logo=docker&logoColor=white)
+![GitHub Actions](https://img.shields.io/badge/CI-GitHub%20Actions-2088ff?logo=githubactions&logoColor=white)
+![CodeQL](https://img.shields.io/badge/SAST-CodeQL-7c4dff?logo=github&logoColor=white)
+![Trivy](https://img.shields.io/badge/Scan-Trivy-1904da?logo=aqua&logoColor=white)
+![Gitleaks](https://img.shields.io/badge/Secrets-Gitleaks-ff2d20)
+![SOPS](https://img.shields.io/badge/Crypto-SOPS%20%2B%20age-26e0a8)
+![GHCR](https://img.shields.io/badge/Registry-GHCR-24292e?logo=github&logoColor=white)
+![Vercel](https://img.shields.io/badge/Deploy-Vercel-000000?logo=vercel&logoColor=white)
+![GitHub Pages](https://img.shields.io/badge/Deploy-GitHub%20Pages-222?logo=githubpages&logoColor=white)
+
+</div>
+
+---
+
+## 🏗️ Architecture du pipeline
+
+À la simple lecture de [`ci-cd.yml`](.github/workflows/ci-cd.yml), un auditeur constate qu'un déploiement
+sur `main` **exige le succès absolu** des jobs de validation amont (chaînage `needs`). Les jobs de
+déploiement sont conditionnés par `if: github.ref == 'refs/heads/main'`.
+
+```mermaid
+flowchart LR
+    subgraph CI["Intégration continue (staging + main)"]
+        direction LR
+        A[validate-workflows] --> B[test]
+        A --> G[gitleaks]
+        B --> C[codeql · SARIF]
+        B --> S[sbom-scan]
+        B --> D
+        G --> D
+        C --> D
+        S --> D
+        D[docker-image<br/>build · Trivy · GHCR]
+    end
+    subgraph CD["Déploiement continu (main uniquement)"]
+        direction LR
+        D --> F[deploy-frontend<br/>GitHub Pages · OIDC]
+        D --> K[deploy-backend<br/>Vercel + healthcheck]
+    end
+    classDef prod fill:#0b7285,stroke:#0b7285,color:#fff;
+    class F,K prod;
 ```
 
+> ⛔ **Barrière absolue** : si Gitleaks lève une alerte, si CodeQL trouve une faille `High`/`Error`,
+> ou si le scan d'image Docker échoue, le pipeline s'arrête et **bloque tout déploiement**.
+> L'usage de `continue-on-error: true` est proscrit.
+
 ---
 
-## 🔀 2. Gouvernance Git & branches
-
-La politique de sécurité est **lisible directement dans le YAML** : à la simple lecture du workflow,
-un auditeur constate qu'un déploiement sur `main` exige le succès absolu des jobs de validation exécutés au préalable.
+## 🔀 Gouvernance Git
 
 | Branche | Rôle | Règles |
 |---------|------|--------|
-| `staging` | Branche pivot d'intégration | La CI s'exécute **entièrement** à chaque push et pull request |
-| `main` | État stable en production | Push directs **strictement interdits**, PR review + status checks stricts, environnement `production` |
-| `preprod` | Préproduction | Branche de prévisualisation sans déploiement GitHub Pages |
+| `staging` | Branche **pivot** d'intégration | La CI s'exécute **entièrement** à chaque push et pull request |
+| `main` | État **stable en production** | Push directs **interdits** · **revue** + status checks requis (ruleset) · environnement `production` |
 
-La stratégie de promotion est rendue visible par trois mécanismes combinés dans [`ci-cd.yml`](.github/workflows/ci-cd.yml) :
+La stratégie de promotion est **lisible directement dans le YAML** :
 
 ```yaml
 on:
@@ -101,249 +140,161 @@ on:
     branches: [staging, main]
 
 jobs:
-  deploy-frontend:
-    if: github.ref == 'refs/heads/main'                     # bloc conditionnel de niveau job
-    needs: [test, gitleaks, codeql, sbom-scan, docker-image] # matrice de dépendance stricte
-    environment: production                                  # environnement GitHub nommé
+  deploy-backend:
+    if: github.ref == 'refs/heads/main'                       # bloc conditionnel de niveau job
+    needs: [test, gitleaks, codeql, sbom-scan, docker-image]  # matrice de dépendance stricte
+    environment: production                                   # environnement GitHub nommé
 ```
 
-> 📋 La politique cible (interdiction de push direct, status checks requis, environnement) est
-> documentée de façon transparente dans [`.github/branch-protection/main.yml`](.github/branch-protection/main.yml).
+> 📋 La politique cible est documentée dans [`.github/branch-protection/main.yml`](.github/branch-protection/main.yml).
 
 ---
 
-## 🧱 3. Durcissement local — Shift-Left
+## 🔐 Sécurité et durcissement
 
-Avant qu'une seule ligne de code n'atteigne GitHub, le hook **`.git/hooks/pre-commit`** garantit
-l'intégrité des commits sur le poste de travail. Il valide **séquentiellement** :
+### Shift-Left : hook `pre-commit`
 
-1. **`actionlint`** sur l'ensemble des fichiers de `.github/workflows/`.
-2. Un **scan `gitleaks` local** focalisé *uniquement* sur les modifications indexées (staged).
-3. Un **contrôle de structure strict** : si un fichier `.env`, `.pem` ou `.key` est présent dans l'index,
-   le commit est avorté immédiatement avec un message d'erreur rouge explicite :
+<img src="docs/assets/github_actions.png" alt="GitHub Actions" height="42"/>
 
-   > **Sécurité : Tentative de commit d'un fichier de configuration ou d'une clé en clair. Opération annulée.**
-
-Le hook Git installé dans `.git/hooks/` n'est pas versionné par Git. Sa source est donc conservée dans
-[`scripts/pre-commit.sh`](scripts/pre-commit.sh) et peut être réinstallée sur un nouveau clone avec :
+Avant qu'une ligne n'atteigne GitHub, [`scripts/pre-commit.sh`](scripts/pre-commit.sh) valide **séquentiellement** :
+1. **`actionlint`** sur `.github/workflows/`, *bloque* en cas d'erreur.
+2. **`gitleaks`** sur les modifications *indexées uniquement*, *bloque* si un secret est trouvé.
+3. **Contrôle de structure** : tout `.env` / `.pem` / `.key` indexé avorte le commit en rouge :
+   > *Sécurité : Tentative de commit d'un fichier de configuration ou d'une clé en clair. Opération annulée.*
 
 ```bash
-bash scripts/install-hooks.sh
+git config core.hooksPath scripts/hooks   # ou :
+bash scripts/install-hooks.sh             # installe le hook dans .git/hooks/
 ```
 
-Sous PowerShell :
+### Règle Gitleaks sur-mesure (`gitleaks.toml`)
 
-```powershell
-.\scripts\install-hooks.ps1
-.\scripts\install-hook-tools.ps1
-```
+<img src="docs/assets/Gitleaks.png" alt="Gitleaks" height="42"/>
 
-### Règle Gitleaks sur-mesure — [`gitleaks.toml`](gitleaks.toml)
-
-Une expression régulière personnalisée intercepte les jetons d'accès internes de l'entreprise :
-préfixe `SECWALLET_` suivi d'**exactement 24 caractères alphanumériques majuscules**, combinée à une
-vérification d'entropie.
+Interception des jetons internes : préfixe `SECWALLET_` + **24 caractères alphanumériques majuscules**, avec entropie.
 
 ```toml
 [[rules]]
 id = "secwallet-internal-token"
-regex = '''SECWALLET_[A-Z0-9]{24}'''
+regex   = '''SECWALLET_[A-Z0-9]{24}'''
 entropy = 3.5
 keywords = ["SECWALLET_"]
 ```
 
----
+### Secrets par enveloppe (SOPS / age)
 
-## 🔐 4. Gestion des secrets par enveloppe (SOPS/age)
+<img src="docs/assets/sops.png" alt="SOPS" height="42"/>
 
-La philosophie GitOps exige qu'**aucun secret de production ne soit stocké en clair**, tout en
-laissant l'équipe Ops auditer les structures de fichiers.
+- Clé privée **age** nommée `ops.txt` (ignorée par Git). Clé publique = destinataire du chiffrement.
+- [`.github/secrets-prod.yaml`](.github/secrets-prod.yaml) : chiffrement **sélectif**, seules les *valeurs*
+  deviennent des blocs `ENC[...]`, les *clés* YAML restent lisibles pour des `git diff` propres.
+- En CD, `SOPS_AGE_KEY` déchiffre le fichier **en mémoire RAM**, **aucun secret n'est écrit sur le disque du runner**.
 
-1. Une paire de clés asymétriques est générée via **`age`**. La clé privée est nommée **`ops.txt`** (ignorée par Git).
-2. [`.github/secrets-prod.yaml`](.github/secrets-prod.yaml) contient les clés de production actuelles et futures
-   (`DATABASE_URL`, `JWT_SECRET`, `API_KEY`).
-3. Le chiffrement **SOPS** est *sélectif* : seules les valeurs applicatives deviennent des blocs `ENC[...]`,
-   tandis que les clés structurelles YAML restent lisibles pour des `git diff` propres.
+### SAST et scan d'images
 
-```bash
-# 1) génération de la paire de clés age (privée → ops.txt, ignorée par Git)
-age-keygen -o ops.txt
+<img src="docs/assets/codeql.png" alt="CodeQL" height="48"/>&nbsp;&nbsp;&nbsp;<img src="docs/assets/trivy.png" alt="Trivy" height="48"/>&nbsp;&nbsp;&nbsp;<img src="docs/assets/docker.png" alt="Docker" height="48"/>
 
-# 2) chiffrement des SEULES valeurs applicatives (encrypted-regex)
-sops --age "$(grep -o 'age1.*' ops.txt)" \
-     --encrypt --encrypted-regex '^(DATABASE_URL|JWT_SECRET|API_KEY)$' \
-     .github/secrets-prod.yaml > .github/secrets-prod.enc.yaml
-Move-Item .github/secrets-prod.enc.yaml .github/secrets-prod.yaml
-```
-
-> Dans GitHub, la clé privée est stockée dans le secret **`SOPS_AGE_KEY`**. Le déchiffrement en CD se fait
-> **en mémoire RAM** — aucun fichier en clair n'est jamais écrit sur le disque du runner (voir §8).
+- **CodeQL** (`security-extended`) analyse le JavaScript, téléverse le **SARIF**, et **échoue** sur `error` ou `security-severity ≥ 7.0`.
+- **Trivy** scanne le SBOM (composite action) et l'image Docker (`HIGH`/`CRITICAL`) avant toute publication.
 
 ---
 
-## 🐳 5. Conteneurisation multi-stage & GHCR
+## 🚀 Déploiement continu
 
-L'artefact serveur du backend est automatiquement construit et publié sous forme d'image Docker sécurisée.
+Le déploiement ne se déclenche **que si toute la CI est verte** et **uniquement sur `main`**.
 
-- **[`Dockerfile`](backend/Dockerfile) multi-stage** : étape `deps` (`npm ci --omit=dev`) puis étape `runtime`
-  Alpine minimale exécutée sous un utilisateur non-root dédié (`nodeapp`).
-- **Filtrage de chemins** : `dorny/paths-filter` ne (re)construit l'image que si `backend/**` a été modifié.
-- **Scan de sécurité de l'image** : avant toute publication, Trivy scanne l'image locale
-  (`trivy image --exit-code 1 --severity HIGH,CRITICAL`).
-- **Publication conditionnelle** : l'image n'est poussée sur **GHCR** (taggée au **SHA du commit**) que si
-  le scan réussit **et** sur la branche `main`, via une authentification dynamique au registre.
+### Frontend → GitHub Pages
 
-```yaml
-- name: Scan backend image
-  if: steps.filter.outputs.backend == 'true'
-  run: trivy image --exit-code 1 --severity HIGH,CRITICAL "${{ steps.meta.outputs.image }}"
-- uses: docker/login-action@v3
-  if: github.ref == 'refs/heads/main' && steps.filter.outputs.backend == 'true'
-  with:
-    registry: ghcr.io
-    username: ${{ github.actor }}
-    password: ${{ secrets.GITHUB_TOKEN }}
-```
+<img src="docs/assets/github_pages.png" alt="GitHub Pages" height="48"/>
+
+`upload-pages-artifact` empaquette `/frontend`, `deploy-pages` publie via **OIDC** (`pages: write` + `id-token: write`),
+sans laisser de trace de build dans l'historique Git.
+→ **https://sorway.github.io/DevSecOps/**
+
+### Backend → Vercel
+
+<img src="docs/assets/nodejs.png" alt="Node.js" height="48"/>&nbsp;&nbsp;&nbsp;<img src="docs/assets/vercel.png" alt="Vercel" height="34"/>
+
+`deploy-backend` (dépendant de tous les jobs sécurité + livraison) déchiffre les secrets **en RAM** et les injecte
+à la volée (`--env`) dans `vercel deploy`. Un **healthcheck** `curl --fail .../api/health` fait échouer le job si l'API ne répond pas `200`.
+→ **https://projet-final-inky-iota.vercel.app**
 
 ---
 
-## ⛓️ 6. Pipeline CI durci & interruption absolue
-
-Le workflow principal [`ci-cd.yml`](.github/workflows/ci-cd.yml) agit comme une **barrière**.
+## 🗂️ Structure du dépôt
 
 ```text
-validate-workflows ─▶ test ─┬─▶ gitleaks ─┐
-                            ├─▶ codeql ────┼─▶ docker-image ─┬─▶ deploy-frontend  (main)
-                            └─▶ sbom-scan ─┘                 └─▶ deploy-backend   (main)
-```
-
-- **Moindre privilège** : `permissions: contents: read` au niveau global. Aucun job n'hérite de droits d'écriture.
-  Les privilèges requis (`packages: write`, `pages: write`, `id-token: write`) sont **isolés au job concerné**.
-- **Optimisation** : mise en cache des dépendances Node via `actions/setup-node` (`cache: npm`) sur les deux lockfiles.
-- **Analyse statique (SAST)** : le moteur **CodeQL** analyse le JavaScript (`security-extended`) et **téléverse le SARIF**.
-  Le job échoue si une vulnérabilité `error` ou de `security-severity ≥ 7.0` est détectée.
-
-### Politique d'interruption stricte
-
-| Contrôle | Comportement bloquant |
-|----------|----------------------|
-| **Testing** | `npm test` doit réussir pour poursuivre le pipeline |
-| **Gitleaks** | Code de sortie non nul si un secret est découvert |
-| **CodeQL / SAST** | Échec si une vulnérabilité majeure (High/Error) est trouvée dans le backend |
-| **Scan image Docker** | Échec sur toute vulnérabilité HIGH/CRITICAL |
-
-> ⛔ L'usage de **`continue-on-error: true` est interdit**. Si Gitleaks lève une alerte, si CodeQL trouve
-> une faille, ou si le scan d'image échoue, le pipeline s'arrête **immédiatement** et bloque tout déploiement.
-
----
-
-## 🧩 7. Composite Action — Trivy SBOM
-
-Pour centraliser la gouvernance de la sécurité et éviter la redondance, les scanners de dépendances au
-format SBOM sont isolés dans une **action composite** locale : [`.github/actions/trivy-scan/action.yml`](.github/actions/trivy-scan/action.yml).
-
-- Type **`composite`**, s'exécutant dans le contexte du job appelant.
-- Entrée obligatoire : `sbom-path` — le chemin du SBOM **CycloneDX JSON** généré en amont.
-- Exécute Trivy en **mode analyse de SBOM** (`trivy sbom`).
-
-| Sévérité détectée | Conséquence |
-|-------------------|-------------|
-| `CRITICAL` | ❌ **Échec** du build (`--exit-code 1`) |
-| `HIGH` / `MEDIUM` | ⚠️ **Avertissement** dans le résumé du workflow (`$GITHUB_STEP_SUMMARY`), le pipeline continue |
-
----
-
-## 🚀 8. Déploiement continu
-
-Le déploiement ne se déclenche **que si l'intégralité des jobs de la CI sont validés**, et uniquement lors
-d'un push/merge validé sur `main`.
-
-### Frontend → GitHub Pages via artefacts éphémères
-
-- Source des Pages définie sur **« GitHub Actions »** (Paramètres > Pages).
-- Job `deploy-frontend` exécuté **uniquement sur `main`**, avec privilèges **OIDC** explicites
-  (`pages: write` + `id-token: write`).
-- `actions/upload-pages-artifact` package le dossier `/frontend`, puis `actions/deploy-pages` propulse le
-  site de manière **hermétique**, sans laisser de trace de build dans l'historique Git.
-
-### Backend → Vercel (machine-to-machine)
-
-- Job `deploy-backend` exigeant le succès complet des jobs de sécurité et de livraison.
-- **Déchiffrement au runtime** : `SOPS_AGE_KEY` déchiffre `.github/secrets-prod.yaml` **en RAM** ; les valeurs
-  sont injectées **à la volée** dans la commande `vercel deploy` (`--env=...`). Aucun secret en clair sur disque.
-
-```yaml
-env:
-  SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
-  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+.
+├── frontend/                       # SPA statique → GitHub Pages
+├── backend/
+│   ├── src/app.js                  # API Express (routes /api/*)
+│   ├── public/                     # copie du frontend (autonomie build/déploiement)
+│   ├── tests/                      # unit · integration · e2e (Jest + supertest)
+│   ├── Dockerfile                  # build multi-stage non-root
+│   └── vercel.json
+├── .github/
+│   ├── workflows/ci-cd.yml         # pipeline principal durci (staging + main)
+│   ├── actions/trivy-scan/         # composite action, scan SBOM CycloneDX
+│   ├── branch-protection/main.yml  # politique de protection documentée
+│   └── secrets-prod.yaml           # secrets chiffrés SOPS (valeurs ENC[...])
+├── scripts/
+│   ├── pre-commit.sh               # hook Shift-Left versionné
+│   ├── install-hooks.sh / .ps1     # installation du hook
+│   └── frontend-smoke-test.js      # test de fumée du frontend
+├── docs/assets/                    # logos (Ynov Campus, DevSecOps)
+├── gitleaks.toml                   # règle SECWALLET_ sur-mesure
+└── README.md
 ```
 
 ---
 
-## 🛟 9. Robustesse, concurrence & rollback
-
-- **Gestion de la concurrence** : deux commits coup sur coup ? Le pipeline du premier est annulé
-  immédiatement (`concurrency.cancel-in-progress: true`) pour économiser les ressources et éviter la
-  concurrence lors des déploiements.
-- **Diagnostic serverless** : la route `/api/debug-ping` évite l'ICMP système et utilise une validation
-  IP / DNS compatible avec Vercel.
-- **Healthcheck post-déploiement** : une fois Vercel terminé, l'URL de production générée dynamiquement est
-  sondée par un `curl` de diagnostic vers `/api/health`. Tout code ≠ `200 OK` fait **échouer le job**,
-  notifiant immédiatement l'équipe d'une anomalie.
-
-```yaml
-- name: Healthcheck
-  run: curl --fail --silent --show-error "${{ steps.vercel.outputs.url }}/api/health"
-```
-
----
-
-## 💻 10. Démarrage local
+## 💻 Démarrage local
 
 ```bash
-npm install     # installe le workspace (backend inclus)
-npm test        # tests Jest du backend + smoke-test du frontend
-npm run lint    # node --check + lint du backend
+npm install                         # workspace (backend inclus)
+npm test                            # tests Jest du backend + smoke-test frontend
+npm run lint                        # node --check + lint backend
+git config core.hooksPath scripts/hooks   # active la barrière Shift-Left
 ```
 
-La route `/api/health` peut etre testee directement apres deploiement pour verifier que les secrets de production
-sont bien injectes dans l'environnement Vercel.
+---
 
-Les contributions de documentation passent par des PR courtes afin de conserver un historique Git lisible.
+## 👥 Équipe
 
-Pour prévisualiser la vitrine localement, ouvrez [`docs/index.html`](docs/index.html) dans un navigateur.
+<div align="center">
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/Sorway">
+        <img src="https://avatars.githubusercontent.com/u/38928488?v=4" width="96" alt="Sorway"/><br/>
+        <sub><b>Sorway</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/astronas">
+        <img src="https://avatars.githubusercontent.com/u/184748371?v=4" width="96" alt="Thibaut Gianola"/><br/>
+        <sub><b>Thibaut Gianola</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/Tiwen2">
+        <img src="https://avatars.githubusercontent.com/u/238646488?v=4" width="96" alt="Tiwen2"/><br/>
+        <sub><b>Tiwen2</b></sub>
+      </a>
+    </td>
+  </tr>
+</table>
+</div>
 
 ---
 
-## ⚙️ 11. Configuration GitHub requise
+## 📄 Licence
 
-| Élément | Où | Valeur |
-|---------|-----|--------|
-| Source des Pages | Settings > Pages | **GitHub Actions** |
-| Protection de branche | Settings > Branches (`main`) | Interdire les push directs, exiger les status checks de §2 |
-| Secret `SOPS_AGE_KEY` | Settings > Secrets and variables > Actions | Clé privée `age` (contenu d'`ops.txt`) |
-| Secret `VERCEL_TOKEN` | idem | Jeton d'API Vercel |
-| Secret `VERCEL_PROJECT_ID` | idem | Identifiant du projet Vercel |
-| Secret `VERCEL_ORG_ID` | idem | Identifiant de l'organisation Vercel |
-
----
-
-## 📦 12. Livrables
-
-Un unique fichier texte déposé sur Moodle contenant :
-
-- **L'URL de la GitHub Page** du frontend publié depuis `main`.
-- **L'URL Vercel** de l'API backend (avec son endpoint `/api/health`).
-- **L'URL du dépôt GitHub public** exposant l'arborescence complète et fonctionnelle : frontend, backend,
-  hooks locaux personnalisés et la structure `.github/` au complet — montrant clairement la protection des
-  branches, les conditions de filtrage Docker et le chaînage logique des dépendances (`needs`).
+Projet académique réalisé dans le cadre du cours **DevSecOps avancé, Sophia Ynov Campus**.
+Usage éducatif. © 2026, équipe SecureWallet.
 
 <div align="center">
 
----
-
-*Made with **Zensical** ✨ — thème inspiré de [astronas.github.io/ynov-virtu](https://astronas.github.io/ynov-virtu/)*
+*Industrialisation · Durcissement · Architecture CI/CD*
 
 </div>

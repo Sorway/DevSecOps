@@ -166,7 +166,7 @@ bash scripts/install-hooks.sh             # installe le hook dans .git/hooks/
 
 ### Règle Gitleaks sur-mesure (`gitleaks.toml`)
 
-<img src="docs/assets/Gitleaks.png" alt="Gitleaks" height="30"/>
+<img src="docs/assets/Gitleaks.png" alt="Gitleaks" height="42"/>
 
 Interception des jetons internes : préfixe `SECWALLET_` + **24 caractères alphanumériques majuscules**, avec entropie.
 
@@ -186,7 +186,7 @@ keywords = ["SECWALLET_"]
 
 ### SAST et scan d'images
 
-<img src="docs/assets/trivy.png" alt="Trivy" height="34"/>&nbsp;&nbsp;&nbsp;<img src="docs/assets/docker.png" alt="Docker" height="34"/>
+<img src="docs/assets/trivy.png" alt="Trivy" height="48"/>&nbsp;&nbsp;&nbsp;<img src="docs/assets/docker.png" alt="Docker" height="48"/>
 
 - **CodeQL** (`security-extended`) analyse le JavaScript, téléverse le **SARIF**, et **échoue** sur `error` ou `security-severity ≥ 7.0`.
 - **Trivy** scanne le SBOM (composite action) et l'image Docker (`HIGH`/`CRITICAL`) avant toute publication.
@@ -204,7 +204,7 @@ sans laisser de trace de build dans l'historique Git.
 
 ### Backend → Vercel
 
-<img src="docs/assets/nodejs.png" alt="Node.js" height="34"/>&nbsp;&nbsp;&nbsp;<img src="docs/assets/vercel.png" alt="Vercel" height="24"/>
+<img src="docs/assets/nodejs.png" alt="Node.js" height="48"/>&nbsp;&nbsp;&nbsp;<img src="docs/assets/vercel.png" alt="Vercel" height="34"/>
 
 `deploy-backend` (dépendant de tous les jobs sécurité + livraison) déchiffre les secrets **en RAM** et les injecte
 à la volée (`--env`) dans `vercel deploy`. Un **healthcheck** `curl --fail .../api/health` fait échouer le job si l'API ne répond pas `200`.

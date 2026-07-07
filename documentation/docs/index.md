@@ -4,7 +4,13 @@
 
 ## Projet final DevSecOps · M1 Cloud, Sécurité & Infrastructure
 
----
+<div class="hero-logos">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/logo_ynov_campus_sophia_white.png">
+    <img src="assets/logo_ynov_campus_sophia.png" alt="Sophia Ynov Campus">
+  </picture>
+  <img src="assets/devsecops.png" alt="DevSecOps">
+</div>
 
 **SecureWallet** industrialise une SPA statique et une API **Node.js** ![Node.js](assets/nodejs.png){ .inline-logo } / Express en une **chaîne CI/CD durcie**, auditable et infalsifiable. L'image backend **Docker** ![Docker](assets/docker.png){ .inline-logo } (multi-stage, non-root) est scannée par **Trivy** ![Trivy](assets/trivy.png){ .inline-logo } puis publiée sur **GHCR**. Le code passe au crible de **CodeQL** ![CodeQL](assets/codeql.png){ .inline-logo }, les secrets sont traqués par **Gitleaks** ![Gitleaks](assets/Gitleaks.png){ .inline-logo } et chiffrés par enveloppe avec **SOPS** ![SOPS](assets/sops.png){ .inline-logo } + age.
 
@@ -47,44 +53,20 @@ chaque modification du code, une série de contrôles se lance toute seule : rec
 oubliés, analyse du code à la recherche de failles, scan des vulnérabilités, tests automatiques. Tant
 que tout n'est pas au vert, rien n'est mis en ligne, et chaque action reste tracée et vérifiable.
 
-Cette documentation raconte, étape par étape, **comment** on l'a construite. Elle s'adresse à trois
-publics :
+Cette documentation raconte, étape par étape, **comment** on l'a construite. 
 
-- au **correcteur**, pour vérifier point par point que le cahier des charges est respecté ;
-- à un **recruteur ou un développeur curieux**, pour voir concrètement à quoi ressemble un pipeline
-  DevSecOps industriel de bout en bout ;
-- à **nous**, l'équipe, comme mémoire technique du projet.
+Elle s'adresse à trois publics :
 
-## En bref
+- Au **correcteur**, pour vérifier point par point que le cahier des charges est respecté !
+- A un **développeur curieux**, pour voir concrètement à quoi ressemble un pipeline
+  DevSecOps industriel de bout en bout...
+- A **nous**, l'équipe, comme mémoire technique du projet.
 
-Deux composants, une seule chaîne CI/CD durcie. Le code des développeurs passe par une branche
-d'intégration, la production n'accepte que du code techniquement validé, et chaque secret reste
-chiffré de bout en bout.
+## Comment lire cette documentation ?
 
-```mermaid
-flowchart LR
-    dev([Développeur]):::actor --> hook[Hook pre-commit]:::warn
-    hook --> stg[(staging)]:::info
-    stg --> pr[PR + revue]:::warn
-    pr --> main[(main)]:::prod
-    main --> ci[CI durcie]:::info
-    ci --> deploy[Déploiement]:::ok
-    classDef actor fill:#495057,stroke:#343a40,color:#fff;
-    classDef info fill:#1c7ed6,stroke:#1971c2,color:#fff;
-    classDef warn fill:#f59f00,stroke:#e8590c,color:#fff;
-    classDef ok fill:#12b886,stroke:#0ca678,color:#fff;
-    classDef prod fill:#0b7285,stroke:#095c6b,color:#fff;
-```
 
-| Composant | Rôle | Livraison |
-|-----------|------|-----------|
-| `frontend/` | SPA statique (HTML / CSS / JS moderne) qui consomme l'API | GitHub Pages (OIDC) |
-| `backend/` | API REST Node.js / Express, données sensibles | Docker → GHCR + Vercel |
-
-## Comment lire cette documentation
-
-1. **[Contexte & consignes](contexte.md)** : ce qu'on nous demande, et comment on s'y prend.
-2. **[Implémentation](architecture.md)** : le détail technique, section par section.
-3. **[Conformité](conformite.md)** : la couverture de l'énoncé, exigence par exigence.
+1. **[Contexte & consignes](contexte.md)** : Le travail qui nous a été demandé, l'analyse qu'on en a fait, et les projections faites...
+2. **[Implémentation](architecture.md)** : Le détail technique de la production, section par section.
+3. **[Conformité](conformite.md)** : La couverture de l'énoncé, exigence par exigence !
 
 <div class="page-home"></div>

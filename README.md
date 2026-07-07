@@ -62,17 +62,28 @@ la production n'accepte que du code *techniquement validé*, et chaque secret re
 
 ## 🧰 Stack technique
 
-![Node.js](https://img.shields.io/badge/Node.js-24-339933?logo=node.js&logoColor=white)
+<div align="center">
+  <img src="docs/assets/nodejs.png" alt="Node.js" height="46"/>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="docs/assets/docker.png" alt="Docker" height="46"/>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="docs/assets/trivy.png" alt="Trivy" height="46"/>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="docs/assets/Gitleaks.png" alt="Gitleaks" height="38"/>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="docs/assets/vercel.png" alt="Vercel" height="30"/>
+</div>
+
+<div align="center">
+
 ![Express](https://img.shields.io/badge/Express-4-000000?logo=express&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-multi--stage-2496ed?logo=docker&logoColor=white)
 ![GitHub Actions](https://img.shields.io/badge/CI-GitHub%20Actions-2088ff?logo=githubactions&logoColor=white)
 ![CodeQL](https://img.shields.io/badge/SAST-CodeQL-7c4dff?logo=github&logoColor=white)
-![Trivy](https://img.shields.io/badge/Scan-Trivy-1904da?logo=aqua&logoColor=white)
-![Gitleaks](https://img.shields.io/badge/Secrets-Gitleaks-ff2d20)
 ![SOPS](https://img.shields.io/badge/Crypto-SOPS%20%2B%20age-26e0a8)
 ![GHCR](https://img.shields.io/badge/Registry-GHCR-24292e?logo=github&logoColor=white)
-![Vercel](https://img.shields.io/badge/Deploy-Vercel-000000?logo=vercel&logoColor=white)
 ![GitHub Pages](https://img.shields.io/badge/Deploy-GitHub%20Pages-222?logo=githubpages&logoColor=white)
+
+</div>
 
 ---
 
@@ -231,6 +242,7 @@ git config core.hooksPath scripts/hooks   # active la barrière Shift-Left
 
 ## 👥 Équipe
 
+<div align="center">
 <table>
   <tr>
     <td align="center">
@@ -245,8 +257,15 @@ git config core.hooksPath scripts/hooks   # active la barrière Shift-Left
         <sub><b>Thibaut Gianola</b></sub>
       </a>
     </td>
+    <td align="center">
+      <a href="https://github.com/Tiwen2">
+        <img src="https://avatars.githubusercontent.com/u/238646488?v=4" width="96" alt="Tiwen2"/><br/>
+        <sub><b>Tiwen2</b></sub>
+      </a>
+    </td>
   </tr>
 </table>
+</div>
 
 ---
 

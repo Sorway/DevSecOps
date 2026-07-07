@@ -1,5 +1,7 @@
 # Déploiement continu
 
+![Déploiement continu](assets/cd.png){ .logo }
+
 Le déploiement ne se déclenche **que si toute la CI est verte** et **uniquement sur `main`**.
 
 ## Frontend → GitHub Pages

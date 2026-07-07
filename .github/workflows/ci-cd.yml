@@ -157,11 +157,26 @@ jobs:
         if: github.ref == 'refs/heads/main' && steps.filter.outputs.backend == 'true'
         run: docker push "${{ steps.meta.outputs.image }}"
 
+  docs-build:
+    name: docs-build
+    runs-on: ubuntu-latest
+    needs: validate-workflows
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build Zensical documentation
+        working-directory: documentation
+        run: |
+          python -m pip install --quiet zensical
+          python -m zensical build --clean
+
   deploy-frontend:
     name: deploy-frontend
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
-    needs: [test, gitleaks, codeql, sbom-scan, docker-image]
+    needs: [test, gitleaks, codeql, sbom-scan, docker-image, docs-build]
     concurrency:
       group: github-pages-deploy
       cancel-in-progress: false
@@ -175,12 +190,27 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build documentation (Zensical)
+        working-directory: documentation
+        run: |
+          python -m pip install --quiet zensical
+          python -m zensical build --clean
+      - name: Assemble Pages artifact (frontend a la racine, docs sur /docs)
+        run: |
+          rm -rf _public
+          mkdir -p _public/docs
+          cp -r frontend/. _public/
+          cp -r documentation/site/. _public/docs/
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v6
-      - name: Upload frontend artifact
+      - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v5
         with:
-          path: frontend
+          path: _public
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5

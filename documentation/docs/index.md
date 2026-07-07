@@ -1,7 +1,16 @@
+<div class="hero-logos">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/logo_ynov_campus_sophia_white.png">
+    <img src="assets/logo_ynov_campus_sophia.png" alt="Sophia Ynov Campus">
+  </picture>
+  <img src="assets/devsecops.png" alt="DevSecOps">
+</div>
+
 # SecureWallet
 
-Chaîne de livraison **auditable, hermétique et infalsifiable** pour une SPA statique et une API
-Node.js manipulant des données sensibles. Projet final du module DevSecOps avancé, Sophia Ynov Campus.
+**SecureWallet est un projet de CI/CD sécurisée** : une chaîne de livraison auditable, hermétique et
+infalsifiable pour une SPA statique et une API Node.js manipulant des données sensibles. Projet final
+du module DevSecOps avancé, Sophia Ynov Campus.
 
 [:material-web: Frontend](https://sorway.github.io/DevSecOps/){ .md-button .md-button--primary }
 [:material-server: API](https://projet-final-inky-iota.vercel.app){ .md-button }

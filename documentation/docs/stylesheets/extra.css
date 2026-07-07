@@ -26,6 +26,24 @@
   margin: 10px;
 }
 
+/* Bandeau de logos en tête de l'accueil (Ynov Campus + DevSecOps) */
+.md-typeset .hero-logos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 2.2rem;
+  margin: 0.4rem 0 1.4rem;
+}
+.md-typeset .hero-logos picture img {
+  height: 60px !important;
+  width: auto !important;
+}
+.md-typeset .hero-logos > img {
+  height: 84px !important;
+  width: auto !important;
+}
+
 /* --- Bandeau de logos de l'accueil : petits, en ligne, centrés ------------ */
 .md-typeset img.logo-strip {
   height: 44px !important;

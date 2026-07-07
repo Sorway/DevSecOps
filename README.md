@@ -1,6 +1,17 @@
 <div align="center">
 
-# 🛡️ SecureWallet — CI/CD DevSecOps
+<p>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/logo_ynov_campus_sophia_white.png">
+    <img src="docs/assets/logo_ynov_campus_sophia.png" alt="Sophia Ynov Campus" height="82">
+  </picture>
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="docs/assets/devsecops.png" alt="DevSecOps" height="66">
+</p>
+
+# 🛡️ SecureWallet
+
+### Industrialisation, durcissement et architecture CI/CD
 
 **Chaîne de livraison auditable, hermétique et infalsifiable.**
 Une SPA statique et une API Node.js manipulant des données sensibles, industrialisées
@@ -10,9 +21,9 @@ en un pipeline durci où *aucun code n'atteint la production sans validation tec
 [![CodeQL](https://img.shields.io/badge/SAST-CodeQL-7c4dff?logo=github)](.github/workflows/ci-cd.yml)
 [![Secrets](https://img.shields.io/badge/Secrets-SOPS%20%2B%20age-26e0a8?logo=vault)](.github/secrets-prod.yaml)
 [![Container](https://img.shields.io/badge/Registry-GHCR-24292e?logo=docker&logoColor=white)](https://github.com/Sorway/DevSecOps/pkgs/container/devsecops%2Fbackend)
-[![Node](https://img.shields.io/badge/Node.js-20-339933?logo=node.js&logoColor=white)](backend/Dockerfile)
+[![Node](https://img.shields.io/badge/Node.js-24-339933?logo=node.js&logoColor=white)](backend/Dockerfile)
 
-🌐 **[Frontend — GitHub Pages](https://sorway.github.io/DevSecOps/)**  ·  ⚙️ **[API — Vercel](https://projet-final-inky-iota.vercel.app)**  ·  ❤️ **[Healthcheck `/api/health`](https://projet-final-inky-iota.vercel.app/api/health)**
+🌐 **[Frontend (GitHub Pages)](https://sorway.github.io/DevSecOps/)**  ·  ⚙️ **[API (Vercel)](https://projet-final-inky-iota.vercel.app)**  ·  ❤️ **[Healthcheck `/api/health`](https://projet-final-inky-iota.vercel.app/api/health)**
 
 </div>
 
@@ -40,7 +51,7 @@ la production n'accepte que du code *techniquement validé*, et chaque secret re
 |--------|----------------|
 | 🔀 **Gouvernance** | `staging` pivot d'intégration · `main` protégée (revue + status checks requis, push direct interdit) |
 | 🧱 **Shift-Left** | Hook `pre-commit` : `actionlint` + `gitleaks` (staged) + refus des fichiers `.env`/`.pem`/`.key` |
-| 🔐 **Secrets** | Chiffrement par enveloppe **SOPS + age**, déchiffrés **en RAM** au runtime — jamais sur disque |
+| 🔐 **Secrets** | Chiffrement par enveloppe **SOPS + age**, déchiffrés **en RAM** au runtime, jamais sur disque |
 | 🐳 **Conteneur** | Dockerfile multi-stage, non-root, scan **Trivy**, publication conditionnelle sur **GHCR** taggée au SHA |
 | 🧪 **CI hermétique** | Moindre privilège (`contents: read`), cache npm, **CodeQL** (SARIF), barrière stricte sans `continue-on-error` |
 | 🧩 **Composite Action** | `trivy-scan` réutilisable : échec sur `CRITICAL`, avertissement sur `HIGH`/`MEDIUM` |
@@ -51,7 +62,7 @@ la production n'accepte que du code *techniquement validé*, et chaque secret re
 
 ## 🧰 Stack technique
 
-![Node.js](https://img.shields.io/badge/Node.js-20-339933?logo=node.js&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-24-339933?logo=node.js&logoColor=white)
 ![Express](https://img.shields.io/badge/Express-4-000000?logo=express&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-multi--stage-2496ed?logo=docker&logoColor=white)
 ![GitHub Actions](https://img.shields.io/badge/CI-GitHub%20Actions-2088ff?logo=githubactions&logoColor=white)
@@ -127,13 +138,13 @@ jobs:
 
 ---
 
-## 🔐 Sécurité & durcissement
+## 🔐 Sécurité et durcissement
 
-### Shift-Left — hook `pre-commit`
+### Shift-Left : hook `pre-commit`
 Avant qu'une ligne n'atteigne GitHub, [`scripts/pre-commit.sh`](scripts/pre-commit.sh) valide **séquentiellement** :
-1. **`actionlint`** sur `.github/workflows/` — *bloque* en cas d'erreur.
-2. **`gitleaks`** sur les modifications *indexées uniquement* — *bloque* si un secret est trouvé.
-3. **Contrôle de structure** — tout `.env` / `.pem` / `.key` indexé avorte le commit en rouge :
+1. **`actionlint`** sur `.github/workflows/`, *bloque* en cas d'erreur.
+2. **`gitleaks`** sur les modifications *indexées uniquement*, *bloque* si un secret est trouvé.
+3. **Contrôle de structure** : tout `.env` / `.pem` / `.key` indexé avorte le commit en rouge :
    > *Sécurité : Tentative de commit d'un fichier de configuration ou d'une clé en clair. Opération annulée.*
 
 ```bash
@@ -141,7 +152,7 @@ git config core.hooksPath scripts/hooks   # ou :
 bash scripts/install-hooks.sh             # installe le hook dans .git/hooks/
 ```
 
-### Règle Gitleaks sur-mesure — [`gitleaks.toml`](gitleaks.toml)
+### Règle Gitleaks sur-mesure (`gitleaks.toml`)
 Interception des jetons internes : préfixe `SECWALLET_` + **24 caractères alphanumériques majuscules**, avec entropie.
 
 ```toml
@@ -152,13 +163,13 @@ entropy = 3.5
 keywords = ["SECWALLET_"]
 ```
 
-### Secrets par enveloppe — SOPS / age
+### Secrets par enveloppe (SOPS / age)
 - Clé privée **age** nommée `ops.txt` (ignorée par Git). Clé publique = destinataire du chiffrement.
-- [`.github/secrets-prod.yaml`](.github/secrets-prod.yaml) : chiffrement **sélectif** — seules les *valeurs*
+- [`.github/secrets-prod.yaml`](.github/secrets-prod.yaml) : chiffrement **sélectif**, seules les *valeurs*
   deviennent des blocs `ENC[...]`, les *clés* YAML restent lisibles pour des `git diff` propres.
-- En CD, `SOPS_AGE_KEY` déchiffre le fichier **en mémoire RAM** — **aucun secret n'est écrit sur le disque du runner**.
+- En CD, `SOPS_AGE_KEY` déchiffre le fichier **en mémoire RAM**, **aucun secret n'est écrit sur le disque du runner**.
 
-### SAST & scan d'images
+### SAST et scan d'images
 - **CodeQL** (`security-extended`) analyse le JavaScript, téléverse le **SARIF**, et **échoue** sur `error` ou `security-severity ≥ 7.0`.
 - **Trivy** scanne le SBOM (composite action) et l'image Docker (`HIGH`/`CRITICAL`) avant toute publication.
 
@@ -193,13 +204,14 @@ sans laisser de trace de build dans l'historique Git.
 │   └── vercel.json
 ├── .github/
 │   ├── workflows/ci-cd.yml         # pipeline principal durci (staging + main)
-│   ├── actions/trivy-scan/         # composite action — scan SBOM CycloneDX
+│   ├── actions/trivy-scan/         # composite action, scan SBOM CycloneDX
 │   ├── branch-protection/main.yml  # politique de protection documentée
 │   └── secrets-prod.yaml           # secrets chiffrés SOPS (valeurs ENC[...])
 ├── scripts/
 │   ├── pre-commit.sh               # hook Shift-Left versionné
 │   ├── install-hooks.sh / .ps1     # installation du hook
 │   └── frontend-smoke-test.js      # test de fumée du frontend
+├── docs/assets/                    # logos (Ynov Campus, DevSecOps)
 ├── gitleaks.toml                   # règle SECWALLET_ sur-mesure
 └── README.md
 ```
@@ -240,8 +252,8 @@ git config core.hooksPath scripts/hooks   # active la barrière Shift-Left
 
 ## 📄 Licence
 
-Projet académique réalisé dans le cadre du cours **DevSecOps avancé — Sophia Ynov Campus**.
-Usage éducatif. © 2026 — équipe SecureWallet.
+Projet académique réalisé dans le cadre du cours **DevSecOps avancé, Sophia Ynov Campus**.
+Usage éducatif. © 2026, équipe SecureWallet.
 
 <div align="center">
 

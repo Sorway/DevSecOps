@@ -1,7 +1,5 @@
 # SecureWallet, une chaîne de livraison sécurisée ! ♾️
 
-ici
-
 <div class="hero-logos">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/logo_ynov_campus_sophia_white.png">
@@ -10,17 +8,21 @@ ici
   <img src="assets/devsecops.png" alt="DevSecOps">
 </div>
 
+![CI/CD sécurisée](assets/ci-cd.webp){ .hero }
 
-**SecureWallet est un projet de CI/CD sécurisée** : une chaîne de livraison auditable, hermétique et
-infalsifiable pour une SPA statique et une API Node.js manipulant des données sensibles. Ce projet conclut un bloc de formation d'environ **28h** sur le DevSecOps à Sophia Ynov Campus, en filière Cloud, Sécurité & Infrastructure.
+## Projet final DevSecOps · M1 Cloud, Sécurité & Infrastructure { .section-bar }
+
+---
+
+**SecureWallet** industrialise une SPA statique et une API **Node.js** ![Node.js](assets/nodejs.png){ .inline-logo } / Express en une **chaîne CI/CD durcie**, auditable et infalsifiable. L'image backend **Docker** ![Docker](assets/docker.png){ .inline-logo } (multi-stage, non-root) est scannée par **Trivy** ![Trivy](assets/trivy.png){ .inline-logo } puis publiée sur **GHCR**. Le code passe au crible de **CodeQL** ![CodeQL](assets/codeql.png){ .inline-logo }, les secrets sont traqués par **Gitleaks** ![Gitleaks](assets/Gitleaks.png){ .inline-logo } et chiffrés par enveloppe avec **SOPS** ![SOPS](assets/sops.png){ .inline-logo } + age.
+
+Le tout est orchestré par **GitHub Actions** ![GitHub Actions](assets/github_actions.png){ .inline-logo } et déployé sur **GitHub Pages** ![GitHub Pages](assets/github_pages.png){ .inline-logo } (frontend, via OIDC) et **Vercel** ![Vercel](assets/vercel.png){ .inline-logo } (backend). Ce projet conclut un bloc de formation d'environ **28 h** de DevSecOps à Sophia Ynov Campus, en filière Cloud, Sécurité & Infrastructure.
 
 [:material-web: Frontend](https://sorway.github.io/DevSecOps/){ .md-button .md-button--primary }
 [:material-server: API](https://projet-final-inky-iota.vercel.app){ .md-button }
 [:material-github: Dépôt](https://github.com/Sorway/DevSecOps){ .md-button }
 
-![CI/CD sécurisée](assets/ci-cd.webp){ .logo }
-
-## L'Équipe sur ce lab 
+## L'Équipe sur ce lab { .section-bar }
 
 <div class="team">
   <div class="member m-blue">
@@ -39,18 +41,6 @@ infalsifiable pour une SPA statique et une API Node.js manipulant des données s
     <a class="handle" href="https://github.com/Tiwen2">@tiwen2</a>
   </div>
 </div>
-
-## La stack technique
-
-![Node.js](assets/nodejs.png){ .logo-strip }
-![Docker](assets/docker.png){ .logo-strip }
-![Trivy](assets/trivy.png){ .logo-strip }
-![CodeQL](assets/codeql.png){ .logo-strip }
-![Gitleaks](assets/Gitleaks.png){ .logo-strip }
-![SOPS](assets/sops.png){ .logo-strip }
-![GitHub Actions](assets/github_actions.png){ .logo-strip }
-![GitHub Pages](assets/github_pages.png){ .logo-strip }
-![Vercel](assets/vercel.png){ .logo-strip }
 
 ## De quoi s'agit-il ?
 
@@ -104,4 +94,3 @@ flowchart LR
 1. **[Contexte & consignes](contexte.md)** : ce qu'on nous demande, et comment on s'y prend.
 2. **[Implémentation](architecture.md)** : le détail technique, section par section.
 3. **[Conformité](conformite.md)** : la couverture de l'énoncé, exigence par exigence.
-

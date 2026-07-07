@@ -35,6 +35,8 @@ fichier évoluer dans les `git diff` sans jamais voir les secrets.
 
 ## Déchiffrement au runtime : 100 % en RAM
 
+![RAM](assets/ram.png){ .logo }
+
 En CD, le secret GitHub `SOPS_AGE_KEY` (la clé privée age) est fourni **en variable d'environnement**.
 SOPS le lit **nativement en mémoire** ; le fichier est déchiffré en RAM et les valeurs sont injectées
 à la volée dans la commande de déploiement Vercel.

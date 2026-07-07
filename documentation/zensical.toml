@@ -23,16 +23,24 @@ nav = [
   { "Accueil" = "index.md" },
   { "Contexte & consignes" = "contexte.md" },
   { "Implémentation" = [
-    { "Architecture du dépôt" = "architecture.md" },
-    { "Gouvernance Git" = "gouvernance.md" },
-    { "Durcissement local" = "shift-left.md" },
-    { "Secrets (SOPS / age)" = "secrets.md" },
-    { "SAST & scan d'images" = "sast.md" },
-    { "Conteneurisation & GHCR" = "conteneurisation.md" },
-    { "Pipeline CI durci" = "ci.md" },
-    { "Composite Action Trivy" = "composite-action.md" },
-    { "Déploiement continu" = "deploiement.md" },
-    { "Robustesse & rollback" = "robustesse.md" },
+    { "Vue d'ensemble" = [
+      { "Architecture du dépôt" = "architecture.md" },
+      { "Gouvernance Git" = "gouvernance.md" },
+    ] },
+    { "Sécurité" = [
+      { "Durcissement local" = "shift-left.md" },
+      { "Secrets (SOPS / age)" = "secrets.md" },
+      { "SAST & scan d'images" = "sast.md" },
+    ] },
+    { "Conteneur & CI" = [
+      { "Conteneurisation & GHCR" = "conteneurisation.md" },
+      { "Pipeline CI durci" = "ci.md" },
+      { "Composite Action Trivy" = "composite-action.md" },
+    ] },
+    { "Déploiement" = [
+      { "Déploiement continu" = "deploiement.md" },
+      { "Robustesse & rollback" = "robustesse.md" },
+    ] },
   ] },
   { "Conformité" = "conformite.md" },
 ]

@@ -4,7 +4,7 @@ Deux moteurs d'analyse de sécurité, chacun **bloquant** selon sa criticité.
 
 ## CodeQL (analyse statique)
 
-![CodeQL](assets/codeql.png){ height="52" }
+![CodeQL](assets/codeql.png){ height="32" }
 
 Le job `codeql` analyse le JavaScript avec le pack `security-extended`, **téléverse le SARIF**, puis
 **échoue** si une vulnérabilité majeure est détectée.
@@ -37,8 +37,8 @@ codeql:
 
 ## Trivy (SBOM + image)
 
-![Trivy](assets/trivy.png){ height="52" }
-![Docker](assets/docker.png){ height="52" }
+![Trivy](assets/trivy.png){ height="32" }
+![Docker](assets/docker.png){ height="32" }
 
 Trivy intervient à deux endroits, avec des politiques distinctes :
 

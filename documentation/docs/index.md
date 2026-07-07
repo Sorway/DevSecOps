@@ -1,64 +1,72 @@
-# SecureWallet
+# SecureWallet, une chaîne de livraison sécurisée ! ♾️
 
-**Chaîne de livraison auditable, hermétique et infalsifiable** pour une SPA statique et une API
-Node.js manipulant des données sensibles, industrialisées en un pipeline durci où *aucun code
-n'atteint la production sans validation technique*.
+![CI/CD sécurisée](assets/ci-cd.webp){ .hero }
 
-!!! note "Projet final — DevSecOps avancé (Sophia Ynov Campus)"
-    Une équipe de développement nous confie le dépôt d'une application : une SPA statique
-    (`frontend/`) et une API Node.js / Express (`backend/`) manipulant des données hautement
-    sensibles (clés d'API, accès à des infrastructures externes). **Notre mission :
-    industrialiser, durcir et sécuriser toute la chaîne CI/CD** — gouvernance Git, secrets
-    chiffrés de bout en bout, conteneurisation, analyse statique, déploiement continu.
+## Projet final DevSecOps · M1 Cloud, Sécurité & Infrastructure
 
-[:material-web: Frontend (GitHub Pages)](https://sorway.github.io/DevSecOps/){ .md-button .md-button--primary }
-[:material-server: API (Vercel)](https://projet-final-inky-iota.vercel.app){ .md-button }
+<div class="hero-logos">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/logo_ynov_campus_sophia_white.png">
+    <img src="assets/logo_ynov_campus_sophia.png" alt="Sophia Ynov Campus">
+  </picture>
+  <img src="assets/devsecops.png" alt="DevSecOps">
+</div>
+
+**SecureWallet** industrialise une SPA statique et une API **Node.js** ![Node.js](assets/nodejs.png){ .inline-logo } / Express en une **chaîne CI/CD durcie**, auditable et infalsifiable. L'image backend **Docker** ![Docker](assets/docker.png){ .inline-logo } (multi-stage, non-root) est scannée par **Trivy** ![Trivy](assets/trivy.png){ .inline-logo } puis publiée sur **GHCR**. Le code passe au crible de **CodeQL** ![CodeQL](assets/codeql.png){ .inline-logo }, les secrets sont traqués par **Gitleaks** ![Gitleaks](assets/Gitleaks.png){ .inline-logo } et chiffrés par enveloppe avec **SOPS** ![SOPS](assets/sops.png){ .inline-logo } + age.
+
+Le tout est orchestré par **GitHub Actions** ![GitHub Actions](assets/github_actions.png){ .inline-logo } et déployé sur **GitHub Pages** ![GitHub Pages](assets/github_pages.png){ .inline-logo } (frontend, via OIDC) et **Vercel** ![Vercel](assets/vercel.png){ .inline-logo } (backend). Ce projet conclut un bloc de formation d'environ **28 h** de DevSecOps à Sophia Ynov Campus, en filière Cloud, Sécurité & Infrastructure.
+
+[:material-web: Frontend](https://sorway.github.io/DevSecOps/){ .md-button .md-button--primary }
+[:material-server: API](https://projet-final-inky-iota.vercel.app){ .md-button }
 [:material-github: Dépôt](https://github.com/Sorway/DevSecOps){ .md-button }
 
-## Les deux composants
+## L'Équipe sur ce lab
 
-| Composant | Description | Livraison |
-|-----------|-------------|-----------|
-| `frontend/` | Single Page Application 100 % statique (HTML / CSS / JS moderne) consommant l'API | **GitHub Pages** via OIDC |
-| `backend/` | API REST Node.js / Express manipulant des données sensibles | **Docker → GHCR** + **Vercel** |
+<div class="team">
+  <div class="member m-blue">
+    <a href="https://github.com/astronas"><img src="https://avatars.githubusercontent.com/u/184748371?v=4" alt="Thibaut Gianola"></a>
+    <strong>Thibaut Gianola</strong>
+    <a class="handle" href="https://github.com/astronas">@astronas</a>
+  </div>
+  <div class="member m-purple">
+    <a href="https://github.com/Sorway"><img src="https://avatars.githubusercontent.com/u/38928488?v=4" alt="Jonathan Panzer"></a>
+    <strong>Jonathan Panzer</strong>
+    <a class="handle" href="https://github.com/Sorway">@Sorway</a>
+  </div>
+  <div class="member m-green">
+    <a href="https://github.com/Tiwen2"><img src="https://avatars.githubusercontent.com/u/238646488?v=4" alt="Redouane Kachour"></a>
+    <strong>Redouane Kachour</strong>
+    <a class="handle" href="https://github.com/Tiwen2">@tiwen2</a>
+  </div>
+</div>
 
-## Le pipeline en un coup d'œil
+## De quoi s'agit-il ?
 
-À la simple lecture de [`ci-cd.yml`](https://github.com/Sorway/DevSecOps/blob/main/.github/workflows/ci-cd.yml),
-un auditeur constate qu'un déploiement sur `main` **exige le succès absolu** des jobs de validation amont.
+Quand une entreprise met en ligne une application qui manipule des données sensibles (comptes, clés
+d'accès, informations personnelles), le vrai danger n'est pas seulement dans le code lui-même : il
+est dans **tout ce qui l'entoure**. Qui a le droit de modifier quoi ? Un mot de passe oublié dans un
+fichier, une faille glissée sans le vouloir, une image serveur vulnérable... comment les repère-t-on
+**avant** qu'ils n'arrivent chez les utilisateurs ?
 
-```mermaid
-flowchart LR
-    subgraph CI["Intégration continue (staging + main)"]
-        direction LR
-        A[validate-workflows] --> B[test]
-        A --> G[gitleaks]
-        B --> C[codeql]
-        B --> S[sbom-scan]
-        B --> D
-        G --> D
-        C --> D
-        S --> D
-        D[docker-image]
-    end
-    subgraph CD["Déploiement (main uniquement)"]
-        direction LR
-        D --> F[deploy-frontend]
-        D --> K[deploy-backend]
-    end
-    classDef prod fill:#0b7285,stroke:#0b7285,color:#fff;
-    class F,K prod;
-```
+Ce projet construit cette **chaîne de sécurité automatisée** autour d'une petite application web. À
+chaque modification du code, une série de contrôles se lance toute seule : recherche de secrets
+oubliés, analyse du code à la recherche de failles, scan des vulnérabilités, tests automatiques. Tant
+que tout n'est pas au vert, rien n'est mis en ligne, et chaque action reste tracée et vérifiable.
 
-## Points clés
+Cette documentation raconte, étape par étape, **comment** on l'a construite. 
 
-- :material-source-branch: **Gouvernance** : `staging` pivot d'intégration, `main` protégée (revue + status checks, push direct interdit).
-- :material-shield-check: **Shift-Left** : hook `pre-commit` (actionlint + gitleaks + refus des `.env`/`.pem`/`.key`).
-- :material-lock: **Secrets** : chiffrement par enveloppe SOPS + age, déchiffrés en RAM, jamais sur disque.
-- :material-docker: **Conteneur** : Dockerfile multi-stage non-root, scan Trivy, publication conditionnelle sur GHCR taggée au SHA.
-- :material-magnify-scan: **CI hermétique** : moindre privilège, cache npm, CodeQL (SARIF), barrière stricte sans `continue-on-error`.
-- :material-rocket-launch: **CD** : GitHub Pages (OIDC) + Vercel (secrets injectés à la volée), healthcheck post-déploiement.
+Elle s'adresse à trois publics :
 
-!!! tip "Par où commencer"
-    Lisez d'abord le [Contexte & consignes](contexte.md), puis suivez la navigation dans l'ordre.
-    La page [Conformité aux consignes](conformite.md) récapitule, point par point, la couverture de l'énoncé.
+- Au **correcteur**, pour vérifier point par point que le cahier des charges est respecté !
+- A un **développeur curieux**, pour voir concrètement à quoi ressemble un pipeline
+  DevSecOps industriel de bout en bout...
+- A **nous**, l'équipe, comme mémoire technique du projet.
+
+## Comment lire cette documentation ?
+
+
+1. **[Contexte & consignes](contexte.md)** : Le travail qui nous a été demandé, l'analyse qu'on en a fait, et les projections faites...
+2. **[Implémentation](architecture.md)** : Le détail technique de la production, section par section.
+3. **[Conformité](conformite.md)** : La couverture de l'énoncé, exigence par exigence !
+
+<div class="page-home"></div>

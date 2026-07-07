@@ -15,7 +15,7 @@ Deux composants distincts dans un même dépôt, industrialisés par une **uniqu
 │   └── vercel.json
 ├── .github/
 │   ├── workflows/ci-cd.yml         # pipeline principal durci (staging + main)
-│   ├── actions/trivy-scan/         # composite action — scan SBOM CycloneDX
+│   ├── actions/trivy-scan/         # composite action : scan SBOM CycloneDX
 │   ├── branch-protection/main.yml  # politique de protection documentée
 │   └── secrets-prod.yaml           # secrets chiffrés SOPS (valeurs ENC[...])
 ├── scripts/

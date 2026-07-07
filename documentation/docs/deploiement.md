@@ -1,8 +1,12 @@
 # Déploiement continu
 
+![Déploiement continu](assets/cd.png){ .logo }
+
 Le déploiement ne se déclenche **que si toute la CI est verte** et **uniquement sur `main`**.
 
 ## Frontend → GitHub Pages
+
+![GitHub Pages](assets/github_pages.png){ .logo }
 
 Publication hermétique via **OIDC**, sans laisser de trace de build dans l'historique Git.
 
@@ -29,6 +33,9 @@ deploy-frontend:
 · :material-book-open-variant: cette documentation est publiée en sous-chemin `/docs/`.
 
 ## Backend → Vercel
+
+![Node.js](assets/nodejs.png){ .logo }
+![Vercel](assets/vercel.png){ .logo }
 
 Déploiement piloté **en ligne de commande** dans GitHub Actions, secrets déchiffrés **en RAM**.
 

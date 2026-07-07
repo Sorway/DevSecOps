@@ -1,5 +1,7 @@
 # Pipeline CI durci
 
+![Intégration continue](assets/ci.png){ .logo }
+
 Le workflow [`ci-cd.yml`](https://github.com/Sorway/DevSecOps/blob/main/.github/workflows/ci-cd.yml)
 agit comme une **barrière** : rien ne se déploie sans le succès complet des contrôles.
 

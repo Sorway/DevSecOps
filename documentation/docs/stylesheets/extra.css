@@ -1,0 +1,257 @@
+/* =========================================================================
+   SecureWallet · styles de la documentation
+   Diagrammes Mermaid colorés et animés (flux "marching ants").
+   ========================================================================= */
+
+/* --- Logos sous les titres : grande illustration centrée ------------------ */
+/* On force la hauteur car le CSS responsive du thème (img { height:auto })
+   écrase l'attribut height=. La classe + !important reprend la main.        */
+.md-typeset p:has(> img.logo),
+.md-typeset p:has(> img.logo-md),
+.md-typeset p:has(> img.logo-strip) {
+  text-align: center;
+}
+.md-typeset img.logo {
+  height: 256px !important;
+  width: auto !important;
+  vertical-align: middle;
+  margin: 12px;
+}
+
+/* Illustrations de thème (page Contexte) : taille intermédiaire */
+.md-typeset img.logo-md {
+  height: 150px !important;
+  width: auto !important;
+  vertical-align: middle;
+  margin: 10px;
+}
+
+/* Bandeau de logos en tête de l'accueil (Ynov Campus + DevSecOps) */
+.md-typeset .hero-logos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: left;
+  justify-content: left;
+  gap: 2.2rem;
+  margin: 1.6rem 0 1.4rem;
+}
+.md-typeset .hero-logos picture img {
+  height: 60px !important;
+  width: auto !important;
+}
+.md-typeset .hero-logos > img {
+  height: 84px !important;
+  width: auto !important;
+}
+
+/* Grande image héros de l'accueil (arrondie, centrée, ombrée) */
+.md-typeset p:has(> img.hero) {
+  text-align: center;
+}
+.md-typeset img.hero {
+  max-width: min(500px, 100%) !important;
+  height: auto !important;
+  border-radius: 14px;
+  box-shadow: 0 10px 34px rgba(0, 0, 0, 0.28);
+  margin: 1rem auto;
+}
+
+/* Titre de section à barre latérale (style ynov-virtu) */
+.md-typeset .section-bar {
+  border-left: 5px solid var(--md-primary-fg-color, #1c7ed6);
+  padding-left: 0.7rem;
+}
+
+/* Petits logos en ligne dans le texte (à côté des noms d'outils) */
+.md-typeset img.inline-logo {
+  height: 22px !important;
+  width: auto !important;
+  vertical-align: middle;
+  margin: 0 3px;
+}
+
+/* --- "Notre démarche" : liste stylée en stepper coloré -------------------- */
+.md-typeset .demarche > ul {
+  list-style: none;
+  margin-left: 0;
+  padding-left: 0;
+}
+.md-typeset .demarche > ul > li {
+  border-left: 4px solid var(--md-primary-fg-color, #1c7ed6);
+  background: rgba(127, 127, 127, 0.08);
+  border-radius: 0 8px 8px 0;
+  padding: 0.6rem 0.9rem;
+  margin: 0.55rem 0;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.md-typeset .demarche > ul > li:hover {
+  transform: translateX(3px);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.16);
+}
+.md-typeset .demarche > ul > li > .twemoji:first-child {
+  font-size: 1.15em;
+  margin-right: 0.15rem;
+}
+.md-typeset .demarche > ul > li:nth-child(1) { border-left-color: #1c7ed6; }
+.md-typeset .demarche > ul > li:nth-child(2) { border-left-color: #7048e8; }
+.md-typeset .demarche > ul > li:nth-child(3) { border-left-color: #e8590c; }
+.md-typeset .demarche > ul > li:nth-child(4) { border-left-color: #12b886; }
+.md-typeset .demarche > ul > li:nth-child(5) { border-left-color: #e03131; }
+
+/* Étiquettes de catégorie : bulles colorées */
+.md-typeset .demarche .cat {
+  display: inline-block;
+  color: #fff;
+  font-size: 0.76em;
+  font-weight: 700;
+  padding: 0.14rem 0.7rem;
+  border-radius: 999px;
+  margin-right: 0.45rem;
+  vertical-align: 2px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+.md-typeset .demarche .cat-1 { background: #1c7ed6; }
+.md-typeset .demarche .cat-2 { background: #7048e8; }
+.md-typeset .demarche .cat-3 { background: #e8590c; }
+.md-typeset .demarche .cat-4 { background: #12b886; }
+.md-typeset .demarche .cat-5 { background: #e03131; }
+
+/* --- Pages sans menu gauche : contenu rapproché de la gauche (sommaire gardé) */
+body:has(.page-noleft) .md-sidebar--primary { display: none !important; }
+
+/* --- Accueil : contenu aligné sous "Accueil", sans colonnes latérales ------ */
+/* Ciblé uniquement sur la page qui contient le marqueur .page-home.          */
+/* On masque la nav gauche (vide) ET le sommaire droit ; le contenu occupe    */
+/* alors toute la grille (même largeur que la barre d'onglets), donc aligné.  */
+.page-home { display: none; }
+body:has(.page-home) .md-sidebar--primary,
+body:has(.page-home) .md-sidebar--secondary {
+  display: none !important;
+}
+body:has(.page-home) .md-content {
+  max-width: none !important;
+}
+
+/* --- Bandeau de logos de l'accueil : petits, en ligne, centrés ------------ */
+.md-typeset img.logo-strip {
+  height: 56px !important;
+  width: auto !important;
+  vertical-align: middle;
+  margin: 6px 10px;
+}
+
+/* --- Zone de contenu élargie (utile sur les pages sans menu latéral) ------ */
+.md-grid {
+  max-width: 72rem;
+}
+
+/* --- Diagrammes Mermaid plus grands et centrés ---------------------------- */
+.md-typeset .mermaid {
+  text-align: center;
+}
+.md-typeset .mermaid svg {
+  max-width: 100% !important;
+  width: 100%;
+  height: auto;
+}
+
+/* --- Section équipe (cartes de membres, style ynov-virtu) ----------------- */
+.md-typeset .team-title {
+  border-left: 4px solid var(--md-primary-fg-color, #1c7ed6);
+  padding-left: 0.6rem;
+}
+.md-typeset .team {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2.4rem;
+  margin: 1.6rem 0;
+}
+.md-typeset .team .member {
+  width: 140px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.md-typeset .team .member img {
+  width: 92px !important;
+  height: 92px !important;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.md-typeset .team .member strong {
+  margin-top: 0.7rem;
+  line-height: 1.2;
+}
+.md-typeset .team .member .handle {
+  color: var(--md-default-fg-color--light);
+  font-size: 0.82em;
+}
+.md-typeset .team .m-blue   img { box-shadow: 0 0 22px 3px #4dabf7; }
+.md-typeset .team .m-purple img { box-shadow: 0 0 22px 3px #b197fc; }
+.md-typeset .team .m-green  img { box-shadow: 0 0 22px 3px #69db7c; }
+
+/* --- Flux animé sur les liens des flowcharts ------------------------------ */
+.mermaid .edgePaths path,
+.mermaid path.flowchart-link,
+.mermaid .edgePath .path {
+  stroke-dasharray: 8 5 !important;
+  animation: sw-flow 850ms linear infinite;
+}
+
+@keyframes sw-flow {
+  to { stroke-dashoffset: -26; }
+}
+
+/* Pointes de flèche plus lisibles */
+.mermaid marker path,
+.mermaid defs marker path {
+  fill: var(--md-accent-fg-color, #22b8cf) !important;
+}
+
+/* Les liens des state/sequence diagrams pulsent doucement */
+.mermaid .transition,
+.mermaid .messageLine0,
+.mermaid .messageLine1 {
+  stroke-dasharray: 6 4 !important;
+  animation: sw-flow 1100ms linear infinite;
+}
+
+/* --- Nœuds : coins arrondis et ombre douce -------------------------------- */
+.mermaid .node rect,
+.mermaid .node polygon,
+.mermaid .node circle {
+  rx: 6px;
+  ry: 6px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.18));
+}
+
+/* Sous-graphes plus discrets */
+.mermaid .cluster rect {
+  rx: 10px;
+  ry: 10px;
+  fill-opacity: 0.06 !important;
+}
+
+/* Apparition en fondu du diagramme une fois rendu */
+.mermaid > svg {
+  animation: sw-fade 500ms ease both;
+}
+@keyframes sw-fade {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Accessibilité : couper les animations si l'utilisateur le demande ---- */
+@media (prefers-reduced-motion: reduce) {
+  .mermaid .edgePaths path,
+  .mermaid path.flowchart-link,
+  .mermaid .edgePath .path,
+  .mermaid .transition,
+  .mermaid .messageLine0,
+  .mermaid .messageLine1,
+  .mermaid > svg {
+    animation: none !important;
+  }
+}

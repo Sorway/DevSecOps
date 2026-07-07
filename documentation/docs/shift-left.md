@@ -1,5 +1,7 @@
 # Durcissement local (Shift-Left)
 
+![GitHub Actions](assets/github_actions.png){ .logo }
+
 Avant qu'une seule ligne n'atteigne GitHub, le hook **`scripts/pre-commit.sh`** garantit l'intégrité
 des commits sur le poste de travail. Il agit comme une **barrière locale**.
 
@@ -26,8 +28,8 @@ Le hook est **versionné** (donc auditable et réinstallable). Sur un nouveau cl
 
 Le hook **bloque le commit** (`exit ≠ 0`) si l'un des trois échoue :
 
-1. **`actionlint`** sur l'ensemble de `.github/workflows/` — bloque en cas d'erreur de workflow.
-2. **`gitleaks`** sur les modifications **indexées uniquement** (`--staged`) — bloque si un secret est trouvé.
+1. **`actionlint`** sur l'ensemble de `.github/workflows/` : bloque en cas d'erreur de workflow.
+2. **`gitleaks`** sur les modifications **indexées uniquement** (`--staged`) : bloque si un secret est trouvé.
 3. **Contrôle de structure strict** : si un fichier `.env` / `.pem` / `.key` est présent dans l'index,
    le commit est **avorté immédiatement** avec un message rouge explicite.
 
@@ -36,11 +38,12 @@ Le hook **bloque le commit** (`exit ≠ 0`) si l'un des trois échoue :
     Sécurité : Tentative de commit d'un fichier de configuration ou d'une clé en clair. Opération annulée.
     ```
 
-!!! note "Barrière réellement bloquante"
-    Le hook capture le code de retour d'`actionlint` et de `gitleaks` : un échec **interrompt** le
-    commit (il n'affiche pas « OK » à tort). Les trois contrôles sont donc de vraies barrières.
+Le hook capture le code de retour d'`actionlint` et de `gitleaks` : un échec **interrompt** le
+commit (il n'affiche pas « OK » à tort). Les trois contrôles sont donc de vraies barrières.
 
 ## Règle Gitleaks sur-mesure
+
+![Gitleaks](assets/Gitleaks.png){ .logo }
 
 Fichier [`gitleaks.toml`](https://github.com/Sorway/DevSecOps/blob/main/gitleaks.toml) : interception
 des jetons internes de l'entreprise, préfixe `SECWALLET_` suivi d'**exactement 24 caractères

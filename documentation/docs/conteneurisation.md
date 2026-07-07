@@ -1,5 +1,7 @@
 # Conteneurisation & GHCR
 
+![Docker](assets/docker.png){ .logo }
+
 L'artefact serveur du backend est construit et publié en image Docker **sécurisée**.
 
 ## Dockerfile multi-stage non-root

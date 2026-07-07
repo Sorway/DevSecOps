@@ -1,5 +1,10 @@
 # Contexte & consignes
 
+Les documents originaux fournis pour ce projet :
+
+[:material-file-pdf-box: Sujet original (PDF)](assets/sujet-projet-final.pdf){ .md-button .md-button--primary }
+[:material-folder-zip: Base de code fournie (ZIP)](assets/skeleton-projet-final.zip){ .md-button }
+
 ## Le point de départ
 
 On nous confie un dépôt qui contient déjà l'application. Notre travail n'est donc pas d'écrire le

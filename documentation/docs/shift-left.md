@@ -1,9 +1,9 @@
 # Durcissement local (Shift-Left)
 
+![GitHub Actions](assets/github_actions.png){ .logo }
+
 Avant qu'une seule ligne n'atteigne GitHub, le hook **`scripts/pre-commit.sh`** garantit l'intégrité
 des commits sur le poste de travail. Il agit comme une **barrière locale**.
-
-![GitHub Actions](assets/github_actions.png){ .logo }
 
 ## Installation
 

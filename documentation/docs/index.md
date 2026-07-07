@@ -17,6 +17,27 @@ Node.js manipulant des données sensibles. Projet final du module DevSecOps avan
 ![GitHub Pages](assets/github_pages.png){ .logo-strip }
 ![Vercel](assets/vercel.png){ .logo-strip }
 
+## De quoi s'agit-il ?
+
+Quand une entreprise met en ligne une application qui manipule des données sensibles (comptes, clés
+d'accès, informations personnelles), le vrai danger n'est pas seulement dans le code lui-même : il
+est dans **tout ce qui l'entoure**. Qui a le droit de modifier quoi ? Un mot de passe oublié dans un
+fichier, une faille glissée sans le vouloir, une image serveur vulnérable... comment les repère-t-on
+**avant** qu'ils n'arrivent chez les utilisateurs ?
+
+Ce projet construit cette **chaîne de sécurité automatisée** autour d'une petite application web. À
+chaque modification du code, une série de contrôles se lance toute seule : recherche de secrets
+oubliés, analyse du code à la recherche de failles, scan des vulnérabilités, tests automatiques. Tant
+que tout n'est pas au vert, rien n'est mis en ligne, et chaque action reste tracée et vérifiable.
+
+Cette documentation raconte, étape par étape, **comment** on l'a construite. Elle s'adresse à trois
+publics :
+
+- au **correcteur**, pour vérifier point par point que le cahier des charges est respecté ;
+- à un **recruteur ou un développeur curieux**, pour voir concrètement à quoi ressemble un pipeline
+  DevSecOps industriel de bout en bout ;
+- à **nous**, l'équipe, comme mémoire technique du projet.
+
 ## En bref
 
 Deux composants, une seule chaîne CI/CD durcie. Le code des développeurs passe par une branche
@@ -48,3 +69,23 @@ flowchart LR
 1. **[Contexte & consignes](contexte.md)** : ce qu'on nous demande, et comment on s'y prend.
 2. **[Implémentation](architecture.md)** : le détail technique, section par section.
 3. **[Conformité](conformite.md)** : la couverture de l'énoncé, exigence par exigence.
+
+## L'Équipe sur ce lab { .team-title }
+
+<div class="team">
+  <div class="member m-blue">
+    <a href="https://github.com/astronas"><img src="https://avatars.githubusercontent.com/u/184748371?v=4" alt="Thibaut Gianola"></a>
+    <strong>Thibaut Gianola</strong>
+    <a class="handle" href="https://github.com/astronas">@astronas</a>
+  </div>
+  <div class="member m-purple">
+    <a href="https://github.com/Sorway"><img src="https://avatars.githubusercontent.com/u/38928488?v=4" alt="Jonathan Panzer"></a>
+    <strong>Jonathan Panzer</strong>
+    <a class="handle" href="https://github.com/Sorway">@Sorway</a>
+  </div>
+  <div class="member m-green">
+    <a href="https://github.com/Tiwen2"><img src="https://avatars.githubusercontent.com/u/238646488?v=4" alt="Redouane Kachour"></a>
+    <strong>Redouane Kachour</strong>
+    <a class="handle" href="https://github.com/Tiwen2">@tiwen2</a>
+  </div>
+</div>

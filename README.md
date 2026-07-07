@@ -29,6 +29,14 @@ en un pipeline durci où *aucun code n'atteint la production sans validation tec
 
 ---
 
+> [!NOTE]
+> **Projet final du module DevSecOps avancé, Sophia Ynov Campus (TD).**
+> Une équipe de développement nous confie le dépôt d'une application : une SPA statique ([`frontend/`](frontend/))
+> et une API Node.js / Express ([`backend/`](backend/)) manipulant des données hautement sensibles (clés d'API,
+> accès à des infrastructures externes). Notre mission : **industrialiser, durcir et sécuriser toute la chaîne
+> CI/CD** (gouvernance Git, secrets chiffrés, conteneurisation, analyse statique, déploiement continu) afin
+> qu'*aucun code n'atteigne la production sans validation technique auditée*.
+
 ## 🧭 Aperçu
 
 Le dépôt réunit deux composants distincts, industrialisés dans une **unique chaîne CI/CD durcie**.
@@ -63,24 +71,17 @@ la production n'accepte que du code *techniquement validé*, et chaque secret re
 ## 🧰 Stack technique
 
 <div align="center">
-  <img src="docs/assets/nodejs.png" alt="Node.js" height="46"/>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="docs/assets/docker.png" alt="Docker" height="46"/>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="docs/assets/trivy.png" alt="Trivy" height="46"/>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="docs/assets/Gitleaks.png" alt="Gitleaks" height="38"/>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="docs/assets/vercel.png" alt="Vercel" height="30"/>
-</div>
 
-<div align="center">
-
+![Node.js](https://img.shields.io/badge/Node.js-24-339933?logo=node.js&logoColor=white)
 ![Express](https://img.shields.io/badge/Express-4-000000?logo=express&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-multi--stage-2496ed?logo=docker&logoColor=white)
 ![GitHub Actions](https://img.shields.io/badge/CI-GitHub%20Actions-2088ff?logo=githubactions&logoColor=white)
 ![CodeQL](https://img.shields.io/badge/SAST-CodeQL-7c4dff?logo=github&logoColor=white)
+![Trivy](https://img.shields.io/badge/Scan-Trivy-1904da?logo=aqua&logoColor=white)
+![Gitleaks](https://img.shields.io/badge/Secrets-Gitleaks-ff2d20)
 ![SOPS](https://img.shields.io/badge/Crypto-SOPS%20%2B%20age-26e0a8)
 ![GHCR](https://img.shields.io/badge/Registry-GHCR-24292e?logo=github&logoColor=white)
+![Vercel](https://img.shields.io/badge/Deploy-Vercel-000000?logo=vercel&logoColor=white)
 ![GitHub Pages](https://img.shields.io/badge/Deploy-GitHub%20Pages-222?logo=githubpages&logoColor=white)
 
 </div>
@@ -164,6 +165,9 @@ bash scripts/install-hooks.sh             # installe le hook dans .git/hooks/
 ```
 
 ### Règle Gitleaks sur-mesure (`gitleaks.toml`)
+
+<img src="docs/assets/Gitleaks.png" alt="Gitleaks" height="30"/>
+
 Interception des jetons internes : préfixe `SECWALLET_` + **24 caractères alphanumériques majuscules**, avec entropie.
 
 ```toml
@@ -181,6 +185,9 @@ keywords = ["SECWALLET_"]
 - En CD, `SOPS_AGE_KEY` déchiffre le fichier **en mémoire RAM**, **aucun secret n'est écrit sur le disque du runner**.
 
 ### SAST et scan d'images
+
+<img src="docs/assets/trivy.png" alt="Trivy" height="34"/>&nbsp;&nbsp;&nbsp;<img src="docs/assets/docker.png" alt="Docker" height="34"/>
+
 - **CodeQL** (`security-extended`) analyse le JavaScript, téléverse le **SARIF**, et **échoue** sur `error` ou `security-severity ≥ 7.0`.
 - **Trivy** scanne le SBOM (composite action) et l'image Docker (`HIGH`/`CRITICAL`) avant toute publication.
 
@@ -196,6 +203,9 @@ sans laisser de trace de build dans l'historique Git.
 → **https://sorway.github.io/DevSecOps/**
 
 ### Backend → Vercel
+
+<img src="docs/assets/nodejs.png" alt="Node.js" height="34"/>&nbsp;&nbsp;&nbsp;<img src="docs/assets/vercel.png" alt="Vercel" height="24"/>
+
 `deploy-backend` (dépendant de tous les jobs sécurité + livraison) déchiffre les secrets **en RAM** et les injecte
 à la volée (`--env`) dans `vercel deploy`. Un **healthcheck** `curl --fail .../api/health` fait échouer le job si l'API ne répond pas `200`.
 → **https://projet-final-inky-iota.vercel.app**

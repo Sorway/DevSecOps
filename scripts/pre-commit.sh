@@ -50,7 +50,7 @@ while IFS= read -r file; do
     fi
 
     if [[ "$file" == ".env" || "$file" == */.env || "$file" == *.env || "$file" == *.pem || "$file" == *.key ]]; then
-        echo -e "${RED}Securite : Tentative de commit d'un fichier de configuration ou d'une cle en clair. Operation annulee.${RESET}"
+        echo -e "${RED}Sécurité : Tentative de commit d'un fichier de configuration ou d'une clé en clair. Opération annulée.${RESET}"
         exit 1
     fi
 done <<< "$staged_files"
@@ -61,21 +61,28 @@ fi
 echo -e "${GREEN}Aucun fichier interdit detecte${RESET}"
 
 echo "Validation GitHub Actions avec actionlint..."
-"$ACTIONLINT_BIN"
+if ! "$ACTIONLINT_BIN"; then
+    echo -e "${RED}actionlint a detecte des erreurs dans les workflows. Commit annule.${RESET}"
+    exit 1
+fi
 echo -e "${GREEN}actionlint OK${RESET}"
 
 echo "Scan des secrets staged avec gitleaks..."
+gitleaks_status=0
 if "$GITLEAKS_BIN" detect --help 2>/dev/null | grep -q -- "--staged"; then
-    "$GITLEAKS_BIN" detect --staged --config gitleaks.toml --verbose </dev/null
+    "$GITLEAKS_BIN" detect --staged --config gitleaks.toml --verbose </dev/null || gitleaks_status=$?
 elif "$GITLEAKS_BIN" protect --help 2>/dev/null | grep -q -- "--staged"; then
-    "$GITLEAKS_BIN" protect --staged --config gitleaks.toml --verbose </dev/null
+    "$GITLEAKS_BIN" protect --staged --config gitleaks.toml --verbose </dev/null || gitleaks_status=$?
 elif [[ -n "$staged_files" ]]; then
-    git diff --cached --name-only -z --diff-filter=ACMR |
-        while IFS= read -r -d '' file; do
-            git show ":$file" | "$GITLEAKS_BIN" stdin --config gitleaks.toml --verbose
-        done
+    while IFS= read -r -d '' file; do
+        git show ":$file" | "$GITLEAKS_BIN" stdin --config gitleaks.toml --verbose || gitleaks_status=$?
+    done < <(git diff --cached --name-only -z --diff-filter=ACMR)
 else
     echo "Aucun fichier staged a scanner avec gitleaks."
+fi
+if [[ "$gitleaks_status" -ne 0 ]]; then
+    echo -e "${RED}gitleaks a detecte un secret dans les fichiers staged. Commit annule.${RESET}"
+    exit 1
 fi
 echo -e "${GREEN}gitleaks OK${RESET}"
 
